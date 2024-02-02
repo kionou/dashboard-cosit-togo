@@ -1,0 +1,34 @@
+{
+  "name": "dashboard-cosit-togo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tinymce/tinymce-vue": "^5.1.1",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "axios": "^1.6.7",
+    "bootstrap-icons": "^1.11.3",
+    "libphonenumber-js": "^1.10.54",
+    "maz-ui": "^3.31.6",
+    "moment": "^2.30.1",
+    "tinymce": "^6.8.2",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.2",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^9.0.0",
+    "gulp-open": "^3.0.1",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "vite": "^5.0.10"
+  }
+}
