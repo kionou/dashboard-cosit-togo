@@ -58,11 +58,11 @@
             <i class="bi bi-trash"></i>
           </span>
 
-          <span style="--i:1" class="opens" v-if="actualite.publish === 0" >
-            <i class="bi bi-power" @click="publish(actualite.id , actualite.Publish)" ></i>
+          <span style="--i:1" class="opens" v-if="actualite.Publish === 0" >
+            <i class="bi bi-power" @click="publish(actualite.id )" ></i>
           </span>
           <span style="--i:1" class="open" v-else>
-            <i class="bi bi-power" @click="publish(actualite.id , actualite.Publish)"></i>
+            <i class="bi bi-power" @click="publish(actualite.id )"></i>
           </span>
 
         </div>
@@ -235,29 +235,17 @@ paginatedItems() {
 
     },
 
-  async publish(id ,statut ){
+  async publish(id  ){
     this.loading = true
     
-    let statutTraitement;
-  if (statut === 1) {
-    statutTraitement = 0;
-  } else if (statut === 0) {
-    statutTraitement = 1;
-  } else {
-    // Gérer le cas où la valeur de statut n'est ni 0 ni 1 (vous pouvez ajouter une logique personnalisée ici)
-    statutTraitement = null; // Ou une autre valeur par défaut si nécessaire
-  }
-
   let dataMpme = {
-    project: id,
-    do:statutTraitement
-
-    
+    service: id,
+   
   };
 console.log('dataMpme',dataMpme);
 
     try {
-        const response = await axios.post('/actualites/publish-actualite', dataMpme, {
+        const response = await axios.post('/projects/publish', dataMpme, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           
@@ -267,11 +255,11 @@ console.log('dataMpme',dataMpme);
         if (response.data.status === 'success') {
          if (response.data.message === "Unpublished") {
           console.log('rrrrr');
-          this.publier = await 'Votre actualité a été retirée de la liste avec succès.'
+          this.publier = await 'Votre service a été retiré de la liste avec succès.'
 
          } else {
           console.log('rrrrr2222');
-          this.publier = await 'Votre actualité a été publiée avec succès !'
+          this.publier = await 'Votre service a été publié avec succès !'
 
           
          }

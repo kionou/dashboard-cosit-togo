@@ -12,7 +12,7 @@
   <input class="search-input" type="text" placeholder="Search something..">
   <button class="search-btn"   ><i class="bi bi-search"></i></button>
 </div>
-        <div class="icon"  @click="$router.push({ path: '/services/ajouter' })" >
+        <div class="icon"  @click="$router.push({ path: '/formations/ajouter' })" >
             <i class="fa-solid fa-plus"></i>
         </div>
        </div>

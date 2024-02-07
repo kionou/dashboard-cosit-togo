@@ -31,6 +31,9 @@ import ProjetsView from '../views/Projets/view.vue'
 import UsersListe from '../views/Users/liste.vue'
 
 
+import Test from '../views/test.vue'
+
+
 
 
 
@@ -71,6 +74,10 @@ const router = createRouter({
         { path: '/projets/detail/:id', name: 'projets-detail', component: ProjetsView , props:true,  meta: { requiresAuth: true }},
 
         { path: '/utilisateurs', name: 'utilisateurs', component: UsersListe,  meta: { requiresAuth: true }},
+
+
+        { path: '/test', name: 'test', component: Test},
+
 
        
 

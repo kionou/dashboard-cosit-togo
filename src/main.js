@@ -10,6 +10,8 @@ import MazAvatar from 'maz-ui/components/MazAvatar'
 import MazTextarea from 'maz-ui/components/MazTextarea'
 import MazSwitch from 'maz-ui/components/MazSwitch'
  import MazDropdown from 'maz-ui/components/MazDropdown'
+ import MazInputPrice from 'maz-ui/components/MazInputPrice'
+ import MazInputTags from 'maz-ui/components/MazInputTags'
 import 'maz-ui/styles'
 
 import { createApp } from 'vue'
@@ -25,6 +27,8 @@ app.component('MazAvatar', MazAvatar)
 app.component('MazTextarea', MazTextarea)
 app.component('MazSwitch', MazSwitch)
 app.component('MazDropdown', MazDropdown)
+app.component('MazInputPrice', MazInputPrice)
+app.component('MazInputTags', MazInputTags)
 
 
 store.dispatch('user/loadLoggedInUser').then(() => {

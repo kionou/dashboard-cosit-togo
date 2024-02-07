@@ -7,18 +7,58 @@
         <p class="title">Ajouter un nouveau service</p>
        
         <small class="text-center">{{error}}</small>
-        <form class="form">
+        <form class="form" enctype="multipart/form-data">
           <div class="row mb-3 mt-3 content-group">
             <div class="col">
               <div class="input-groupe">
-                <label for="titre">Titre</label>
-                <MazInput v-model="titre"  no-radius color="warning" type="text"/>
+                <label for="titre">Domaine de formation</label>
+                <MazSelect v-model="categorie" :options="Categories" no-radius color="warning" search />
               </div>
-              <small v-if="v$.titre.$error">{{ v$.titre.$errors[0].$message }}</small>
+              <small v-if="v$.categorie.$error">{{ v$.categorie.$errors[0].$message }}</small>
+
+            </div>
+            
+            
+          </div>
+          <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Nom</label>
+                <MazInput v-model="nom"  no-radius color="warning" type="text"/>
+              </div>
+              <small v-if="v$.nom.$error">{{ v$.nom.$errors[0].$message }}</small>
+
+            </div>
+             <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Montant</label>
+                 <MazInputPrice v-model="priceValue" currency="XOF" locale="fr-FR" no-radius color="warning"  :min="1000" @formatted="formattedPrice = $event"/>
+              </div>
+              <small v-if="v$.priceValue.$error">{{ v$.priceValue.$errors[0].$message }}</small>
 
             </div>
             
           </div>
+          <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Date début</label>
+                <input type="date"  name="date"   id="date"  v-model="debut" autofocus="autofocus" :min="minEndDate" />
+              </div>
+              <small v-if="v$.debut.$error">{{ v$.debut.$errors[0].$message }}</small>
+
+            </div>
+             <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Date Fin</label>
+                <input type="date"  name="date"   id="date"  v-model="fin" autofocus="autofocus" :min="minEndDate" />
+              </div>
+              <small v-if="v$.fin.$error">{{ v$.fin.$errors[0].$message }}</small>
+
+            </div>
+            
+          </div>
+            
           <div class="row mb-3 mt-3 content-group">
             <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
                    
@@ -27,11 +67,37 @@
                         @change="handleFileChange" />
                       <label for="file">
                         <i class="bi bi-cloud-arrow-down"></i>
-                      Joindre une pièce
+                      Joindre une image
                       </label>
                   
                     <!-- <small v-if="v$.selectedFile.$error">{{ v$.selectedFile.$errors[0].$message }}</small> -->
                   </div>
+                  <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                   
+                   <input type="file" name="file"  class="inputfile"  ref="fileText"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                     @change="handleFileUpload" />
+                   <label for="file">
+                     <i class="bi bi-cloud-arrow-down"></i>
+                     Joindre un textel
+                   </label>
+               
+                 <!-- <small v-if="v$.selectedFile.$error">{{ v$.selectedFile.$errors[0].$message }}</small> -->
+               </div>
+       
+          </div>
+            
+          <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Prerequis</label>
+                <MazInputTags   v-model="prerequis" no-radius color="warning"  />
+              </div>
+              <small v-if="v$.prerequis.$error">{{ v$.prerequis.$errors[0].$message }}</small>
+
+            </div>
+          
+                 
        
           </div>
          
@@ -83,6 +149,8 @@
 import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput';
 import useVuelidate from '@vuelidate/core';     
 import { require, lgmin,  ValidEmail,   } from '@/functions/rules';
+import MazInputPrice from 'maz-ui/components/MazInputPrice'
+import MazInputTags from 'maz-ui/components/MazInputTags'
 import axios from '@/lib/axiosConfig.js'
 import MazDialog from 'maz-ui/components/MazDialog'
 import Loading from '@/components/Loyout/loading.vue';
@@ -90,21 +158,31 @@ import Editor from '@tinymce/tinymce-vue'
 
 export default {
     components: {
-     MazPhoneNumberInput , MazDialog , Editor , Loading
+     MazPhoneNumberInput , MazDialog , Editor , Loading , MazInputPrice ,MazInputTags
   }, 
     data() {
         return {
             v$:useVuelidate(), 
             selectedFile: '',
+            selectedText:'',
             loading:false,
-            titre:'',
+            nom:'',
             description:'',
-            publishDoc:false
+            priceValue:'',
+            categorie:'',
+            prerequis:[],
+            debut: '', // Date début
+            fin: '',   // Date fin
+            formattedPrice:'',
+            publishDoc:false,
+            Categories:[],
+            
+
         }
     },
 
     validations: {
-    titre: {
+      nom: {
         require,
       lgmin: lgmin(2),
     },
@@ -112,6 +190,21 @@ export default {
     description: {
       require,
       lgmin: lgmin(2),
+    },
+    priceValue:{
+      require,
+    },
+    categorie:{
+      require
+    },
+    prerequis:{
+      require
+    },
+    debut:{
+      require
+    },
+    fin:{
+      require
     },
    
  
@@ -121,10 +214,21 @@ export default {
   loggedInUser() {
     return this.$store.getters['user/loggedInUser'];
   },
+  minEndDate() {
+      // Calcule la date minimale autorisée (date actuelle)
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      let month = currentDate.getMonth() + 1;
+      month = month < 10 ? `0${month}` : month;
+      let day = currentDate.getDate();
+      day = day < 10 ? `0${day}` : day;
+
+      return `${year}-${month}-${day}`;
+    },
 },
 
-  mounted() {
-
+async  mounted() {
+    await this.fetchCategories()
     console.log("datadossiers", this.loggedInUser);
 },
 methods: {
@@ -135,6 +239,24 @@ methods: {
       this.selectedFile = file
     },
 
+   
+    handleFileUpload() {
+      this.selectedText= this.$refs.fileText.files[0];
+      console.log( this.selectedText);
+    },
+    async fetchCategories() {
+      try {
+        await this.$store.dispatch('fetchCategories');
+        const Categories = JSON.parse(JSON.stringify(this.$store.getters.getCategories));
+        console.log(Categories);
+        this.Categories =  Categories.map(region => ({
+        label: region.Name        ,
+        value: region.id
+      }));
+      } catch (error) {
+        console.error("Erreur lors de la récupération des cours :", error.message);
+      }
+    },
     async submit() {
       this.v$.$touch();
       console.log("bonjour");
@@ -143,16 +265,23 @@ methods: {
         console.log("bonjour");
          this.loading = true;
         const formData = new FormData();
-        formData.append("Name", this.titre);
+        formData.append("Name", this.nom);
         formData.append("Description", this.description);
-        formData.append("Photo", this.selectedFile);
-        formData.append("Publish", 0);
+        formData.append("Photos", this.selectedFile);
+        formData.append("IsActive", 0);
+        formData.append("Prerequis[]", this.prerequis);
+        formData.append("Fichier", this.selectedText);
+        formData.append("StartDate", this.debut);
+        formData.append("EndDate", this.fin);
+        formData.append("Cost", this.priceValue);
+        formData.append("Category_id", this.categorie);
+       
         
         console.log(formData);
         console.log(
-          this.titre,
-          this.description,
-          this.selectedFile
+          this.nom,this.fin ,  this.categorie, this.formattedPrice,
+          this.description, this.selectedText, this.debut,
+          this.selectedFile, this.prerequis , this.priceValue
         );
 
         try {
@@ -175,6 +304,7 @@ methods: {
         console.log("cest pas bon ", this.v$.$errors);
       }
     },
+    
 },
 }
 </script>
@@ -255,7 +385,8 @@ textarea {
 
 .input-groupe input:focus,
 .input-groupe textarea:focus {
-  border-color: var(--color-primary);
+  border-color: #fcb731;
+ 
 }
 
 
