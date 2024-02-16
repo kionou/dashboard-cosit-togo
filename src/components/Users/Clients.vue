@@ -459,6 +459,10 @@
             }
           } catch (error) {
             console.error('Erreur lors de la suppression:', error);
+            if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
             
           }
     
@@ -515,8 +519,9 @@
           } catch (error) {
             console.error('Erreur lors du téléversement :', error);
             if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-              this.$router.push("/");  //a revoir
-            }
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
             
            
         }
@@ -657,8 +662,9 @@
          } catch (error) {
            console.error("Erreur lors du téléversement :", error);
            if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-              this.$router.push("/");  //a revoir
-            }
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
          }
        } else {
          console.log("cest pas bon ", this.v$.$errors);

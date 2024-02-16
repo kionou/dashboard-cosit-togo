@@ -1663,9 +1663,9 @@ select:visited {
 /*Team area*/
 /*----------------------------------------------------*/
 .ximsa-it-team-section {
-  padding: 125px 0px;
+
   overflow: hidden;
-  background-color: #f7f7f7;
+ 
 }
 .ximsa-it-team-section .ximsa-it-section-title {
   max-width: 530px;
@@ -1676,6 +1676,8 @@ select:visited {
   border-radius: 5px;
   padding: 20px 0px 0px;
   background-color: #fff;
+  width: 260px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 .ximsa-it-team-item:after, .ximsa-it-team-item:before {
   top: 0;
@@ -1691,15 +1693,21 @@ select:visited {
   transition: 500ms all ease;
 }
 .ximsa-it-team-item:before {
-  background: linear-gradient(162.41deg, #43BAFF 1.77%, #7141B1 92.78%);
+  background: var(--linear);
 }
 .ximsa-it-team-item .inner-img {
-  width: 260px;
-  height: 260px;
+  width: 150px;
+  height: 150px;
   margin: 0 auto;
   overflow: hidden;
-  margin-bottom: 35px;
-  border-radius: 100%;
+  margin-bottom: 10px; 
+  border-radius: 50%;
+  border: 3px solid rgb(233, 233, 233);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
 }
 .ximsa-it-team-item .inner-text {
   padding: 0px 15px;
@@ -1712,7 +1720,8 @@ select:visited {
 }
 .ximsa-it-team-item .inner-text p {
   color: #9C96A4;
-  font-weight: 600;
+  padding-bottom: 15px;
+
 }
 .ximsa-it-team-item .social-mail-wrap {
   border: 2px solid #F5F5F5;
@@ -1777,8 +1786,8 @@ select:visited {
 }
 
 .ximsa-it-team-content {
-  padding-top: 65px;
-  margin: 0px -15px;
+
+  margin-right: 15px;
 }
 .ximsa-it-team-content .xism-it-team-left_arrow,
 .ximsa-it-team-content .xism-it-team-right_arrow {
@@ -2208,10 +2217,7 @@ select:visited {
     right: 0;
   }
 
-  .ximsa-it-team-item .inner-img {
-    width: 220px;
-    height: 220px;
-  }
+
 
   .ximsa-it-team-content .xism-it-team-right_arrow {
     right: -30px;

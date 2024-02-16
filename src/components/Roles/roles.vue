@@ -26,7 +26,7 @@
                     <div class="col-lg-8 offset-lg-2">
                         <div class="aplpg-title-area text-center wow fadeInUp">
                             <div class="aplpg-headline">
-                                <h3>Liste des Personnls</h3>
+                                <h3>Liste des Roles</h3>
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                 <div class="aplpg-blog-content">
                     <div class="aplpg-blog-slider">
               <div v-if="paginatedItems.length === 0" class="noresul">
-          <span> Vous n'avez pas encore de personnel, vous pouvez également en ajouter un !! </span>
+          <span> Vous n'avez pas encore de role, vous pouvez également en ajouter un !! </span>
         </div>
     
         <div class="container-fluid " v-else>
@@ -47,9 +47,7 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Acteur</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Fonction</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Téléphone</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Noms</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Crée</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                     </tr>
@@ -60,22 +58,17 @@
                         <div class="d-flex px-2 py-1">
                           <div>
                             
-                            <img  v-if="user.profil === null" src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                            <img  v-else :src="user.profile" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                            <img   src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                            
                           </div>
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ user.Prenoms }} {{ user.Nom }}</h6>
-                            <p class="text-xs text-secondary mb-0">{{ user.email }}</p>
+                            <h6 class="mb-0 text-sm">{{ user.name }} </h6>
+                           
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ user.roles[0].name }}</p>
-                       
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <p class="text-xs font-weight-bold mb-0">{{ user.Whatsapp }}</p>
-                      </td>
+                      
+                     
                       <td class="align-middle text-center">
                         <span class="text-secondary text-xs font-weight-bold"> {{ formatCreatedAt(user.created_at) }}</span>
                       </td>
@@ -88,13 +81,6 @@
                         </span>
                         <span style="--i:2" @click="hamdledeletedoc(user.id)" class="delete">
                         <i class="bi bi-trash"></i>
-                        </span>
-
-                        <span style="--i:1" class="opens" v-if="user.publish === 1">
-                        <i class="bi bi-power" @click="publish(user.id , user.publish)"></i>
-                        </span>
-                        <span style="--i:1" class="open" v-else>
-                        <i class="bi bi-power" @click="publish(user.id , user.publish)"></i>
                         </span>
 
                     </div>
@@ -122,8 +108,8 @@
     </div>
     
     
-    <MazDialog v-model="AddCathegorie" title="Ajouté un personnel"  width="600px">
-        <div class="container my-auto py-4  bg-white" id="container">
+    <MazDialog v-model="AddCathegorie" title="Ajouté un role"  >
+        <div class="container my-auto bg-white" id="container">
                             <div class="row">
                                 <div class="col-11 col-lg-11 mx-auto">
                                     
@@ -135,65 +121,9 @@
                                             <label class="font-weight-600 text-color-orange" for="emailAddress">Nom</label>
                                             <MazInput v-model="step1.nom"  no-radius color="warning" type="text"/>
                                              <small v-if="v$.step1.nom.$error">{{v$.step1.nom.$errors[0].$message}}</small>
+                                        </div>                                       
                                         </div>
-                                        
-
-                                        </div>
-                                        <div class="col">
-                                        <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Prenom</label>
-                                            <MazInput v-model="step1.prenom"  no-radius color="warning" type="text"/>
-                                            <small v-if="v$.step1.prenom.$error">{{v$.step1.prenom.$errors[0].$message}}</small>
-
-                                        </div>
-                                        
-
-                                        </div>
-                                         </div>
-                                        
-                                         <div class="row mb-3 mt-3 content-group">
-                                        <div class="col">
-                                        <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Adresse Email </label>
-                                            <MazInput v-model="step1.email"  no-radius color="warning" type="email"/>
-                                            <small v-if="v$.step1.email.$error">{{v$.step1.email.$errors[0].$message}}</small>
-
-                                        </div>
-                                        
-
-                                        </div>
-                                        <div class="col">
-                                        <div class="input-groupe">
-                                           
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Numéro Téléphonique </label>
-                                            <MazPhoneNumberInput v-model="step1.phoneNumber" show-code-on-list no-radius color="warning" defaultCountryCode="TG"
-                                            :ignored-countries="['AC']" @update="results = $event" :success="results?.isValid"  country-locale="fr-FR" noFlags="true" />
-                                            <small v-if="v$.step1.phoneNumber.$error">{{v$.step1.phoneNumber.$errors[0].$message}}</small>
-                                        </div>
-                                        </div>
-                                         </div>
-
-                                         <div class="row mb-3 mt-3 content-group">
-                                        <div class="col">
-                                        <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Mot de passe </label>
-                                            <MazInput v-model="step1.password"  no-radius color="warning" type="password"/>
-                                            <small v-if="v$.step1.password.$error">{{v$.step1.password.$errors[0].$message}}</small>
-                                        </div>
-                                        
-
-                                        </div>
-                                        <div class="col">
-                                        <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Confirmé leMot de passe </label>
-                                            <MazInput v-model="step1.confirmer_password"  no-radius color="warning" type="password"/>
-                                            <small v-if="v$.step1.confirmer_password.$error">{{v$.step1.confirmer_password.$errors[0].$message}}</small>
-                                            <small v-if="!validatePasswordsMatch()">Les mots de passe ne correspondent pas.</small>
-
-                                        </div>
-                                        
-
-                                        </div>
+                                       
                                          </div>
                                          <div class="btn">
                                                 <button class="sign" @click.prevent="submit">Soumettre</button>
@@ -207,7 +137,7 @@
         
     </MazDialog>
     
-    <MazDialog v-model="UpdateCathegorie" title="Mise à d'un personnel"  width="600px">
+    <MazDialog v-model="UpdateCathegorie" title="Mise à d'un role"  >
       <div class=" d-flex align-items-center py-5">
                             <div class="container my-auto   bg-white" id="container">
                                 <div class="row">
@@ -216,17 +146,17 @@
                                         
                                         <small>{{ error }}</small>
                                         <form data-request="onSignin" class="login_form">
-                                             <div class="form-group">
-                                                <label class="font-weight-600 text-color-orange" for="nom">Nom</label>
-                                                <MazInput v-model="step2.nom"  no-radius color="warning" type="text"/>
-                                                <small v-if="v$.step2.nom.$error">{{v$.step2.nom.$errors[0].$message}}</small>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="font-weight-600 text-color-orange" for="contenu">Description</label>
-                                                <MazTextarea v-model="step2.contenu" name="comment" id="comment" color="warning" />
-                                             
-                                                <small v-if="v$.step2.contenu.$error">{{v$.step2.contenu.$errors[0].$message}}</small>
-                                            </div>
+                                          <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Nom</label>
+                                            <MazInput v-model="step2.nom"  no-radius color="warning" type="text"/>
+                                             <small v-if="v$.step2.nom.$error">{{v$.step2.nom.$errors[0].$message}}</small>
+                                        </div>                                       
+                                        </div>
+                                       
+                                         </div>
+                                            
     
                                             <div class="btn">
                                                 <button class="sign" @click.prevent="submit">Soumettre</button>
@@ -314,57 +244,27 @@
           publier:'',
           publishDoc:false,
           currentPage: 1,
-          itemsPerPage: 2,
+          itemsPerPage: 12,
           totalPageArray: [], 
           switchValue: {},
           v$: useVuelidate(),
           publish:'',
           error:'',
-            step1:{
-
-                email: '',
-      phoneNumber: '',
-      password: '',
-      confirmer_password: '',
-      nom: '',
-      prenom: '',
-            }
-        
-          
-          
+            step1:{nom: ''} ,
+            step2:{nom: ''} ,
         }
       },
       validations: {
-        step1:{
-            email: {
-      require,
-    },
-    phoneNumber: {
-      require,
-    },
-    password: {
-      require,
-      lgmin: lgmin(8),
-      lgmax: lgmax(20),
-    },
-    confirmer_password: {
-      require,
-      lgmin: lgmin(8),
-      lgmax: lgmax(20),
-    },
-    nom: {
+        step1:{  nom: {
       require,
       lgmin: lgmin(2),
       lgmax: lgmax(20),
-    },
-    prenom: {
+    }},
+    step2:{  nom: {
       require,
       lgmin: lgmin(2),
       lgmax: lgmax(20),
-    },
-        }
-   
-  
+    }},
 
   },
       computed: {
@@ -397,19 +297,15 @@
     },
         async fetchActualites() {
             try {
-              const response = await axios.get('/users', {
+              const response = await axios.get('/roles', {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
                 
               },
     
             });
-              console.log(response.data.data.data);
-              const nonStudentUsers = response.data.data.data.filter(user => {
-            return !user.roles.some(role => role.name === 'STUDENTS');
-        });
-
-        // Utilisez nonStudentUsers dans votre composant
+              console.log(response.data.data);
+                const nonStudentUsers = response.data.data
         this.ActualitesOptions = nonStudentUsers;
         console.log(nonStudentUsers);
 
@@ -468,65 +364,7 @@
     
         },
     
-      async publish(id ,statut ){
-        this.loading = true
-        
-        let statutTraitement;
-      if (statut === 1) {
-        statutTraitement = 0;
-      } else if (statut === 0) {
-        statutTraitement = 1;
-      } else {
-        // Gérer le cas où la valeur de statut n'est ni 0 ni 1 (vous pouvez ajouter une logique personnalisée ici)
-        statutTraitement = null; // Ou une autre valeur par défaut si nécessaire
-      }
-    
-      let dataMpme = {
-        project: id,
-        do:statutTraitement
-    
-        
-      };
-    console.log('dataMpme',dataMpme);
-    
-        try {
-            const response = await axios.post('/actualites/publish-actualite', dataMpme, {
-              headers: {
-                Authorization: `Bearer ${this.loggedInUser.token}`,
-              
-              }
-            });
-            console.log('Réponse du téléversement :', response.data.message);
-            if (response.data.status === 'success') {
-             if (response.data.message === "Unpublished") {
-              console.log('rrrrr');
-              this.publier = await 'Votre actualité a été retirée de la liste avec succès.'
-    
-             } else {
-              console.log('rrrrr2222');
-              this.publier = await 'Votre actualité a été publiée avec succès !'
-    
-              
-             }
-                this.loading = false
-                this.publishDoc = true
-               await this.fetchActualites()
-    
-              
-            }else{
-              
-            }
-          } catch (error) {
-            console.error('Erreur lors du téléversement :', error);
-            if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-            await this.$store.dispatch('user/clearLoggedInUser');
-          this.$router.push("/");  //a revoir
-        }
-            
-           
-        }
-        },
-    
+  
         updateCurrentPage(pageNumber) {
           this.currentPage = pageNumber;
           window.scrollTo({
@@ -562,17 +400,16 @@
              this.loading = true;
             const dataCath = {
     
-              Name:this.step1.nom,
-              Description:this.step1.contenu,
-              isActive:0
+              name:this.step1.nom,
+             
             }
            
             console.log(dataCath);
            
             try {
-              const response = await axios.post("/categories", dataCath, {
+              const response = await axios.post("/roles", dataCath, {
                 headers: {
-                  "Content-Type": "multipart/form-data",
+                  
                   Authorization: `Bearer ${this.loggedInUser.token}`,
                 },
               });
@@ -580,7 +417,7 @@
               if (response.data.status === "success") {
                await this.fetchActualites()
                this.AddCathegorie = false
-               this.publier = " Votre cathégorie a été crée avec succès !"
+               this.publier = " Votre role a été crée avec succès !"
                 this.publishDoc = true
                 this.loading = false
                 
@@ -602,7 +439,7 @@
       this.loading = true
     
         try {
-           const response = await axios.get(`/categories/detail/${id}`, {
+           const response = await axios.get(`/roles/${id}`, {
              headers: {
               
                Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -613,9 +450,8 @@
             const selectedActualites = response.data.data;
             this.selectedActualites = selectedActualites
            console.log(selectedActualites);
-           this.step2.nom = selectedActualites.Name;
-            this.step2.contenu = selectedActualites.Description;
-            this.publish = selectedActualites.isActive
+           this.step2.nom = selectedActualites.name;
+           
             this.ToDeleteId = id
              this.loading =false
            } 

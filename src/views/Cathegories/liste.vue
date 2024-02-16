@@ -2,7 +2,7 @@
 
 <Loading v-if="loading" style="z-index: 99999;"></Loading>
     <div>
-      <div class="row">
+      <div class="row class3">
        
         <div class="containerr">
     
@@ -81,11 +81,11 @@
             <i class="bi bi-trash"></i>
           </span>
 
-          <span style="--i:1" class="opens" v-if="cathegorie.isActive === 1">
-            <i class="bi bi-power" @click="publish(cathegorie.id )"></i>
+          <span style="--i:1" class="opens" v-if="cathegorie.isActive === 0">
+            <i class="bi bi-power" @click="publishs(cathegorie.id )"></i>
           </span>
           <span style="--i:1" class="open" v-else>
-            <i class="bi bi-power" @click="publish(cathegorie.id )"></i>
+            <i class="bi bi-power" @click="publishs(cathegorie.id )"></i>
           </span>
 
         </div>
@@ -257,7 +257,7 @@ export default {
       publier:'',
       publishDoc:false,
       currentPage: 1,
-      itemsPerPage: 2,
+      itemsPerPage: 12,
       totalPageArray: [], 
       switchValue: {},
       v$: useVuelidate(),
@@ -388,7 +388,7 @@ paginatedItems() {
 
     },
 
-    async publish(id  ){
+    async publishs(id){
     this.loading = true
     
   let dataMpme = {
@@ -528,6 +528,7 @@ console.log('dataMpme',dataMpme);
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
      }
@@ -568,6 +569,7 @@ console.log('dataCath',dataCath,this.ToDeleteId);
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
      }

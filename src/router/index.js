@@ -30,6 +30,15 @@ import ProjetsView from '../views/Projets/view.vue'
 
 import UsersListe from '../views/Users/liste.vue'
 
+import SouscriptionListe from '../views/Souscription/accueil.vue'
+import SouscriptionDetail from '../views/Souscription/detail.vue'
+
+import RolePermission from '../views/Role&Permission/liste.vue'
+
+import Droits from '../views/Droits/liste.vue'
+
+
+
 
 import Test from '../views/test.vue'
 
@@ -75,7 +84,16 @@ const router = createRouter({
 
         { path: '/utilisateurs', name: 'utilisateurs', component: UsersListe,  meta: { requiresAuth: true }},
 
+        { path: '/souscriptions', name: 'souscriptions', component: SouscriptionListe,  meta: { requiresAuth: true }},
+        { path: '/souscriptions/:id', name: 'souscriptions-detail', component: SouscriptionDetail, props:true, meta: { requiresAuth: true }},
 
+       { path: '/roles-permissions' , name: 'roles-permissions' , component:RolePermission , meta:{requiresAuth :true}},
+
+       { path: '/droits' , name: 'droits' , component:Droits , meta:{requiresAuth :true}},
+
+
+
+        
         { path: '/test', name: 'test', component: Test},
 
 

@@ -183,6 +183,7 @@ methods: {
         } catch (error) {
           console.error(error);
           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
         }
@@ -209,6 +210,7 @@ methods: {
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
      }
@@ -265,6 +267,7 @@ methods: {
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
      }

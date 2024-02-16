@@ -2155,6 +2155,8 @@ a.aplpg-secondary-btn:hover .aplpg-gradient-border {
   text-align: center;
   position: relative;
   margin: 15px 15px 0 0;
+  height: 350px;
+  /* width: 300px; */
 }
 
 .aplpg-blog-content .aplpg-blog-column .aplpg-img-wrapper {

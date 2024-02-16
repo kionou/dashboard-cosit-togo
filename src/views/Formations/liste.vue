@@ -2,7 +2,7 @@
 
 <Loading v-if="loading" style="z-index: 99999;"></Loading>
     <div>
-      <div class="row">
+      <div class="row class3">
        
         <div class="containerr">
     
@@ -47,22 +47,22 @@
                 <span>
                   <div class="sci">
           <span style="--i:1"  class="dow">
-            <i class="bi bi-eye"  @click="$router.push({ path:  '/formation/detail/'+ actualite.id })"></i>
+            <i class="bi bi-eye"  @click="$router.push({ path:  '/formations/detail/'+ actualite.id })"></i>
            
           </span>
           <span style="--i:1" class="update">
-            <i class="bi bi-pen" @click="$router.push({ path:  '/formation/update/'+ actualite.id })"></i>
+            <i class="bi bi-pen" @click="$router.push({ path:  '/formations/update/'+ actualite.id })"></i>
            
           </span>
           <span style="--i:2" @click="hamdledeletedoc(actualite.id)" class="delete">
             <i class="bi bi-trash"></i>
           </span>
 
-          <span style="--i:1" class="opens" v-if="actualite.publish === 0" >
-            <i class="bi bi-power" @click="publish(actualite.id , actualite.Publish)" ></i>
+          <span style="--i:1" class="opens" v-if="actualite.IsActive === 0" >
+            <i class="bi bi-power" @click="publish(actualite.id )" ></i>
           </span>
           <span style="--i:1" class="open" v-else>
-            <i class="bi bi-power" @click="publish(actualite.id , actualite.Publish)"></i>
+            <i class="bi bi-power" @click="publish(actualite.id )"></i>
           </span>
 
         </div>
@@ -70,7 +70,7 @@
 							</div>
 							<div class="aplg-blog-column-txt">
 								<div class="aplpg-headline">
-									<h6>{{ actualite.Name }}</h6>
+									<h6>{{ truncateText(actualite.Name, 6) }}</h6>
 								</div>
 								
 							</div>
@@ -87,9 +87,9 @@
   <div class="container_pagination">
   <Pag :current-page="currentPage" :total-pages="totalPages" @page-change="updateCurrentPage" />
 </div>
-  <MazDialog v-model="isdeletedoc" title="Suppression d'actualité">
+  <MazDialog v-model="isdeletedoc" title="Suppression de formation">
       <p>
-        Êtes-vous sûr de vouloir supprimer cette actualité ?
+        Êtes-vous sûr de vouloir supprimer cette Formation ?
       </p>
       <template #footer="{ close }">
 
@@ -100,9 +100,9 @@
       </template>
     </MazDialog>
 
-    <MazDialog v-model="confirmdeletedoc" title="Actualité supprimée">
+    <MazDialog v-model="confirmdeletedoc" title="Formation supprimée">
       <p>
-        Actualité supprimée avec succès !!
+        Formation supprimée avec succès !!
       </p>
       <template #footer="{ close }">
 
@@ -113,7 +113,7 @@
       </template>
     </MazDialog>
 
-    <MazDialog v-model="publishDoc" title="Actualité mise à jour">
+    <MazDialog v-model="publishDoc" title="Formation mise à jour">
       <p>
         {{  publier }}
       
@@ -190,6 +190,7 @@ paginatedItems() {
         } catch (error) {
           console.error(error);
           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
         }
@@ -199,6 +200,7 @@ paginatedItems() {
       console.log(itemId);
       this.ToDeleteId = itemId;
       this.isdeletedoc = true
+   
 
     },
 
@@ -208,10 +210,10 @@ paginatedItems() {
       this.isdeletedoc = false
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/services/${this.ToDeleteId}`, {
+        const response = await axios.delete(`/courses/${this.ToDeleteId}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
-            'Content-Type': 'multipart/form-data',
+           
 
           },
 
@@ -229,34 +231,25 @@ paginatedItems() {
         }
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
-        
+        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
       }
 
     },
 
-  async publish(id ,statut ){
+  async publish(id  ){
     this.loading = true
     
-    let statutTraitement;
-  if (statut === 1) {
-    statutTraitement = 0;
-  } else if (statut === 0) {
-    statutTraitement = 1;
-  } else {
-    // Gérer le cas où la valeur de statut n'est ni 0 ni 1 (vous pouvez ajouter une logique personnalisée ici)
-    statutTraitement = null; // Ou une autre valeur par défaut si nécessaire
-  }
-
-  let dataMpme = {
-    project: id,
-    do:statutTraitement
-
-    
+   let dataMpme = {
+    courses: id,
+   
   };
-console.log('dataMpme',dataMpme);
+  console.log('dataMpme',dataMpme);
 
     try {
-        const response = await axios.post('/actualites/publish-actualite', dataMpme, {
+        const response = await axios.post('/courses/publish', dataMpme, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           
@@ -287,7 +280,7 @@ console.log('dataMpme',dataMpme);
         if (error && error.response.data === 'Unauthorized' || error.response.data.status === 'error') {
                     console.log('aut', error.response.data.status === 'error');
                     await this.$store.dispatch('user/clearLoggedInUser');
-                    this.$router.push('/connexion-mpme');
+                    this.$router.push('/');
 
                 } else {
                     this.formatValidationErrors(error.response.data.errors)
@@ -311,7 +304,14 @@ console.log('dataMpme',dataMpme);
       const endIndex = startIndex + this.itemsPerPage;
       return  this.ActualitesOptions.slice(startIndex, endIndex);
     },
-    
+    truncateText(text, maxWords) {
+      const words = text.split(' ');
+      console.log(words);
+      if (words.length > maxWords) {
+        return words.slice(0, maxWords).join(' ') + '...';
+      }
+      return text;
+    },
 
   },
     

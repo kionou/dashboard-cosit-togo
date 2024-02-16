@@ -30,12 +30,15 @@
 		import "@/assets/css/style-32.css"
 
 import "@/assets/js/core/popper.min.js"
-import "@/assets/js/core/bootstrap.min.js"
+// import "@/assets/js/core/bootstrap.min.js"
 import "@/assets/js/plugins/perfect-scrollbar.min.js"
 import "@/assets/js/material-dashboard.min.js?v=3.1.0"
   import "@/assets/css/nucleo-icons.css" 
   import "@/assets/css/nucleo-svg.css" 
+  import "@/assets/css/it-solution-2.css"
   import "@/assets/css/material-dashboard.css?v=3.1.0" 
+
+ 
 
   export default {
   name:'App',

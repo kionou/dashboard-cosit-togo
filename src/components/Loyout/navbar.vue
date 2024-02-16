@@ -27,8 +27,8 @@
 
                   <MazDropdown :items="[
                     { label: 'Utilisateurs', to: { name: 'utilisateurs' } },
-                    { label: 'Role', to: { name: 'cathegories' } },
-                    { label: 'Profils', to: { name: 'formations' } },
+                    { label: 'Roles & Permissions', to: { name: 'roles-permissions' } },
+                    { label: 'Droits', to: { name: 'droits' } },
 
                   ]">
                     Utilisateurs
@@ -53,12 +53,8 @@
                   <i class="material-icons  opacity-10 opacity-6 text-dark me-1">settings</i>
 
                   <MazDropdown :items="[
-                    //  { label: 'Actualites', to: { name: 'actualites' } },
-                    //  { label: 'Cathegorie', to: { name: 'cathegories' } },
-                    //  { label: 'Formation', to: { name: 'formations' } },
-                    //  { label: 'Services', to: { name: 'services' } },
-                    //  { label: 'Projets', to: { name: 'projets' } },
-                    { label: 'Types payements', to: { name: 'type-payement' } },
+                   
+                    { label: 'souscriptions', to: { name: 'souscriptions' } },
                   ]">
                     payements
                   </MazDropdown>

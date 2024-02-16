@@ -179,3 +179,10 @@ border:1px solid var(--color-primary);
     justify-content: center;
     margin: 0 5px;
 }
+
+.class3{
+
+  max-width: 1180px;
+  margin: 0 auto !important;
+  width: 100%;
+}

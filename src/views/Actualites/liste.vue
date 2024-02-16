@@ -2,8 +2,7 @@
 
 <Loading v-if="loading" style="z-index: 99999;"></Loading>
     <div>
-      <div class="row">
-       
+      <div class="row class3">    
         <div class="containerr">
     
      
@@ -70,7 +69,7 @@
 							</div>
 							<div class="aplg-blog-column-txt">
 								<div class="aplpg-headline">
-									<h6>{{ actualite.titre }}</h6>
+									<h6> {{ truncateText(actualite.titre, 6) }}</h6>
 								</div>
 								
 							</div>
@@ -230,6 +229,7 @@ paginatedItems() {
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
         if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
       }
@@ -285,6 +285,7 @@ console.log('dataMpme',dataMpme);
       } catch (error) {
         console.error('Erreur lors du téléversement :', error);
         if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
        
@@ -303,6 +304,14 @@ console.log('dataMpme',dataMpme);
      
       const endIndex = startIndex + this.itemsPerPage;
       return  this.ActualitesOptions.slice(startIndex, endIndex);
+    },
+    truncateText(text, maxWords) {
+      const words = text.split(' ');
+      console.log(words);
+      if (words.length > maxWords) {
+        return words.slice(0, maxWords).join(' ') + '...';
+      }
+      return text;
     },
     
 

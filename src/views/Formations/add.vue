@@ -4,7 +4,7 @@
         <div class="container-fluid  d-flex justify-content-center align-items-center general" 
       data-aos-delay="100">
       <div class="form-container">
-        <p class="title">Ajouter un nouveau service</p>
+        <p class="title">Ajouter une nouvelle Formation</p>
        
         <small class="text-center">{{error}}</small>
         <form class="form" enctype="multipart/form-data">
@@ -62,10 +62,10 @@
           <div class="row mb-3 mt-3 content-group">
             <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
                    
-                      <input type="file" name="file" id="file" class="inputfile"  ref="fileInput"
+                      <input type="file" name="files" id="files" class="inputfile"  ref="fileInput"
                         accept="image/*"
                         @change="handleFileChange" />
-                      <label for="file">
+                      <label for="files">
                         <i class="bi bi-cloud-arrow-down"></i>
                       Joindre une image
                       </label>
@@ -74,10 +74,10 @@
                   </div>
                   <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
                    
-                   <input type="file" name="file"  class="inputfile"  ref="fileText"
+                   <input type="file" name="filee" id="filee" class="inputfile"  ref="fileText"
                       accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                      @change="handleFileUpload" />
-                   <label for="file">
+                   <label for="filee">
                      <i class="bi bi-cloud-arrow-down"></i>
                      Joindre un textel
                    </label>
@@ -130,14 +130,14 @@
       </div>
     </div>
 
-    <MazDialog v-model="publishDoc" title="Service ajouté avec success">
+    <MazDialog v-model="publishDoc" title="Formation ajoutée avec success">
       <p>
-        Votre service a été publié avec succès !
+        Votre Formation a été publiée avec succès !
       
       </p>
       <template #footer="">
 
-        <div class="supp" @click="$router.push({ path: '/services' })" style="background-color: blue; "> Ok</div>
+        <div class="supp" @click="$router.push({ path: '/formations' })" style="background-color: blue; "> Ok</div>
 
 
 
@@ -235,7 +235,7 @@ methods: {
     handleFileChange(event) {
       console.log("File input change");
       const file = event.target.files[0];
-      console.log("Selected file:", file);
+      console.log("Selected fileImage:", file);
       this.selectedFile = file
     },
 
@@ -276,6 +276,7 @@ methods: {
         formData.append("Cost", this.priceValue);
         formData.append("Category_id", this.categorie);
        
+       
         
         console.log(formData);
         console.log(
@@ -285,7 +286,7 @@ methods: {
         );
 
         try {
-          const response = await axios.post("/services", formData, {
+          const response = await axios.post("/courses", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -299,6 +300,10 @@ methods: {
           } 
         } catch (error) {
           console.error("Erreur lors du téléversement :", error);
+          if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
         }
       } else {
         console.log("cest pas bon ", this.v$.$errors);

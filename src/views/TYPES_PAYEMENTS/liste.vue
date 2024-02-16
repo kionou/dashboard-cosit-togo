@@ -2,7 +2,7 @@
 
 <Loading v-if="loading" style="z-index: 99999;"></Loading>
     <div>
-      <div class="row">
+      <div class="row class3">
        
         <div class="containerr">
     
@@ -113,10 +113,6 @@
 		</div>
    
 	</section>
-  <div class="container_pagination">
-  <Pag :current-page="currentPage" :total-pages="totalPages" @page-change="updateCurrentPage" />
-</div>
-
 
 <MazDialog v-model="AddCathegorie" title="Ajoutée une cathégorie"  width="600px">
   <div class=" d-flex align-items-center py-5">
@@ -229,6 +225,9 @@
       </template>
     </MazDialog>
     </div>
+    <div class="container_pagination">
+  <Pag :current-page="currentPage" :total-pages="totalPages" @page-change="updateCurrentPage" />
+</div>
 </template>
 <script>
 import Loading from '@/components/Loyout/loading.vue';
@@ -345,6 +344,7 @@ paginatedItems() {
         } catch (error) {
           console.error(error);
           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
         }
@@ -385,6 +385,7 @@ paginatedItems() {
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
         if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
       }
@@ -430,6 +431,7 @@ console.log('dataMpme',dataMpme);
       } catch (error) {
         console.error('Erreur lors du téléversement :', error);
         if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
        
@@ -497,6 +499,7 @@ console.log('dataMpme',dataMpme);
         } catch (error) {
           console.error("Erreur lors du téléversement :", error);
           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
         }
@@ -530,6 +533,7 @@ console.log('dataMpme',dataMpme);
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
      }
@@ -570,6 +574,7 @@ console.log('dataCath',dataCath,this.ToDeleteId);
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
      }
@@ -832,6 +837,7 @@ form {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
 }
+
 
     
 </style>

@@ -14,8 +14,28 @@
                                
                             <div  class="article-p">
                                     <div  class="image">
-                                        <img  class="img-fluid" alt=" actualite" :src="selectedActualites.Photos">
+                                        <img  class="img-fluid" alt=" actualite" :src="selectedActualites.Photo">
                                     </div>
+                                    <div  class="texte" style="margin-left: 18px;">
+                                                <p  class="texte-content ">
+                                                  <span class="cs1">Date de début:</span>
+                                                 <span style="font-weight: bolder;">{{selectedActualites.StartDate }}</span>
+                                                </p>
+                                                <p  class="texte-content ">
+                                                    <span class="cs1">Date de fin:</span>
+                                                    <span style="font-weight: bolder;" >{{selectedActualites.EndDate }}</span>
+                                                </p>
+
+                                                <p  class="texte-content ">
+                                                    <span class="cs1">Prix:</span>
+                                                    <span style="font-weight: bolder;" >{{selectedActualites.Cost }}</span>
+                                                </p>
+                                                <p  class="texte-content ">
+                                                    <span class="cs1">Type de Formation:</span>
+                                                    <span style="font-weight: bolder;" >{{selectedActualites.category?.Name }}</span>
+                                                </p>
+                                             
+                                            </div>
                                 </div>
                                
                                
@@ -74,23 +94,12 @@ export default {
    mounted() {
        console.log(this.id);
        this.fetchActualites();
-       this.fetchServices();
    },
    methods: {
-       async fetchServices() {
-     try {
-       await this.$store.dispatch('fetchServices');
-       const services = JSON.parse(JSON.stringify(this.$store.getters.getServices));
-       this.services = services
-       console.log(services);
-       
-     } catch (error) {
-       console.error("Erreur lors de la récupération des services :", error.message);
-     }
-   },
+     
    async fetchActualites() {
     try {
-       const response = await axios.get(`/services/detail/${this.id}/`, {
+       const response = await axios.get(`/courses/detail/${this.id}/`, {
          headers: {
           
            Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -105,6 +114,10 @@ export default {
        } 
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
+       if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
      }
 },
 
@@ -117,6 +130,16 @@ formatDate(dateString) {
 }
 </script>
 <style lang="css" scoped>
+.texte-content {
+ 
+ margin-bottom: 0!important;
+}
+
+.cs1 {
+
+ margin-right: 14px;
+}
+
 
    
 </style>

@@ -2,7 +2,7 @@
 
 <Loading v-if="loading" style="z-index: 99999;"></Loading>
     <div>
-      <div class="row">
+      <div class="row class3">
        
         <div class="containerr">
     
@@ -40,7 +40,9 @@
           <div class="col-lg-3" v-for="actualite in paginatedItems" :key="actualite.id" >
 						<div class="aplpg-blog-column">
 							<div class="aplpg-img-wrapper">
-                <img :src="actualite.Images" alt="">
+                <!-- <img :src="actualite.Images" alt=""> -->
+                <img v-if="isValidImage(actualite.Images)" :src="actualite.Images" alt="">
+                <img v-else src="../../assets/site/logo.png" alt="">
 							</div>
 							<div class="aplpg-blog-meta">
 								
@@ -58,11 +60,11 @@
             <i class="bi bi-trash"></i>
           </span>
 
-          <span style="--i:1" class="opens" v-if="actualite.publish === 0" >
-            <i class="bi bi-power" @click="publish(actualite.id )" ></i>
+          <span style="--i:1" class="opens" v-if="actualite.Publish === 0" >
+            <i class="bi bi-power" @click="HandlePublish(actualite.id )" ></i>
           </span>
           <span style="--i:1" class="open" v-else>
-            <i class="bi bi-power" @click="publish(actualite.id )"></i>
+            <i class="bi bi-power" @click="HandlePublish(actualite.id )"></i>
           </span>
 
         </div>
@@ -70,7 +72,7 @@
 							</div>
 							<div class="aplg-blog-column-txt">
 								<div class="aplpg-headline">
-									<h6>{{ actualite.Name }}</h6>
+									<h6> {{ truncateText(actualite.Name, 6) }}</h6>
 								</div>
 								
 							</div>
@@ -126,6 +128,40 @@
 
       </template>
     </MazDialog>
+    <MazDialog v-model="PublishProject" title="mise à jour du projet"  width="450px">
+  <div class=" d-flex align-items-center ">
+                        <div class="container my-auto   bg-white" id="container">
+                            <div class="row">
+                                <div class="col-11 col-lg-11 mx-auto">
+                                   
+                                    
+                                    <small>{{ error }}</small>
+                                    <form data-request="onSignin" class="login_form">
+                                         <div class="form-group">
+                                            <label class="font-weight-600 text-color-orange" for="nom">Publier</label>
+                                            <MazSelect v-model="publies" color="warning" :options="Choix" no-radius   /> 
+
+                                            <small v-if="v$.publies.$error">{{v$.publies.$errors[0].$message}}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="font-weight-600 text-color-orange" for="contenu">Progression du projet</label>
+                                            <MazSelect v-model="progress" color="warning" :options="EtatOptions" no-radius   /> 
+                                         
+                                            <small v-if="v$.progress.$error">{{v$.progress.$errors[0].$message}}</small>
+                                        </div>
+
+                                        <div class="btn">
+                                            <button class="sign" @click.prevent="publish">Soumettre</button>
+                                          
+                                          </div>
+                                    </form>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+</MazDialog>
     </div>
 </template>
 <script>
@@ -133,6 +169,8 @@ import Loading from '@/components/Loyout/loading.vue';
 import axios from '@/lib/axiosConfig.js'
 import MazDialog from 'maz-ui/components/MazDialog'
 import Pag from '@/components/Loyout/pag.vue';
+import useVuelidate from '@vuelidate/core';     
+import { require, lgmin,  ValidEmail,   } from '@/functions/rules';
 export default {
   components: {
        Loading , MazDialog , Pag
@@ -146,12 +184,33 @@ export default {
       isdeletedoc:false,
       confirmdeletedoc:false,
       publier:'',
+      publies:'',
+      progress:'',
       publishDoc:false,
       currentPage: 1,
       itemsPerPage: 12,
+      PublishProject:false,
       totalPageArray: [], 
+      EtatOptions: [
+                { label: "En cours", value: 0 },
+                { label: "Terminer", value: 1 },
+              ],
+              Choix: [
+                { label: "Oui", value: 1 },
+                { label: "Non", value: 0 },
+              ],
+              v$:useVuelidate(), 
       
     }
+  },
+  validations: {
+    publies : {
+       
+    },
+    progress:{
+    
+    },
+    
   },
   computed: {
   
@@ -190,6 +249,7 @@ paginatedItems() {
         } catch (error) {
           console.error(error);
           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
         }
@@ -229,32 +289,43 @@ paginatedItems() {
         }
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
+        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
         
       }
 
     },
 
-  async publish(id ){
+    async HandlePublish(id){
+      this.PublishProject = true,
+      this.ToDeleteId = id
+      this.fetchActualitesDetail(id) 
+
+    },
+  async publish(){
     this.loading = true
     
-  //   let statutTraitement;
-  // if (statut === 1) {
-  //   statutTraitement = false;
-  // } else if (statut === 0) {
-  //   statutTraitement = true;
-  // } else {
+    let statutTraitement;
+  if ( this.progress === 1) {
+    statutTraitement = "DONE";
+  } else if ( this.publies === 1) {
+    statutTraitement = "PUB";
+  } else {
     
-  //   statutTraitement = null; // Ou une autre valeur par défaut si nécessaire
-  // }
+    statutTraitement = null; // Ou une autre valeur par défaut si nécessaire
+  }
 
-  let dataMpme = {
-    code: id,
+  let DataProjrcts = {
+    project:  this.ToDeleteId,
+    do:statutTraitement
     
   };
-console.log('dataMpme',dataMpme);
+console.log('dataMpme',DataProjrcts);
 
     try {
-        const response = await axios.post('/actualites/publish-actualite', dataMpme, {
+        const response = await axios.post('/projects/publish', DataProjrcts, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           
@@ -283,11 +354,39 @@ console.log('dataMpme',dataMpme);
       } catch (error) {
         console.error('Erreur lors du téléversement :', error);
         if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
           this.$router.push("/");  //a revoir
         }
        
     }
     },
+
+    async fetchActualitesDetail(id) {
+        try {
+          const response = await axios.get(`/projects/detail/${id}/`, {
+         headers: {
+          
+           Authorization: `Bearer ${this.loggedInUser.token}`,
+         },
+       });
+          console.log(response.data.data);
+          const selectedActualites = response.data.data
+          console.log(selectedActualites);
+         
+        this.publies = selectedActualites.Publish
+        this.progress = selectedActualites.ProgressDone
+        
+        
+          this.loading= false
+        
+        } catch (error) {
+          console.error(error);
+          if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
+        }
+      },
 
     updateCurrentPage(pageNumber) {
       this.currentPage = pageNumber;
@@ -302,7 +401,17 @@ console.log('dataMpme',dataMpme);
       const endIndex = startIndex + this.itemsPerPage;
       return  this.ActualitesOptions.slice(startIndex, endIndex);
     },
-    
+    truncateText(text, maxWords) {
+      const words = text.split(' ');
+      console.log(words);
+      if (words.length > maxWords) {
+        return words.slice(0, maxWords).join(' ') + '...';
+      }
+      return text;
+    },
+    isValidImage(src) {   
+      return src && src.indexOf('.') !== -1;
+    },
 
   },
     

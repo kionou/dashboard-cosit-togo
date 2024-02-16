@@ -8,17 +8,56 @@
     
      <small class="text-center">{{error}}</small>
      <form class="form">
-       <div class="row mb-3 mt-3 content-group">
-         <div class="col">
-           <div class="input-groupe">
-             <label for="titre">Titre</label>
-             <MazInput v-model="titre"  no-radius color="warning" type="text"/>
-           </div>
-           <small v-if="v$.titre.$error">{{ v$.titre.$errors[0].$message }}</small>
+      <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Domaine de formation</label>
+                <MazSelect v-model="categorie" :options="Categories" no-radius color="warning" search />
+              </div>
+              <small v-if="v$.categorie.$error">{{ v$.categorie.$errors[0].$message }}</small>
 
-         </div>
-         
-       </div>
+            </div>
+            
+            
+          </div>
+          <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Nom</label>
+                <MazInput v-model="nom"  no-radius color="warning" type="text"/>
+              </div>
+              <small v-if="v$.nom.$error">{{ v$.nom.$errors[0].$message }}</small>
+
+            </div>
+             <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Montant</label>
+                 <MazInputPrice v-model="priceValue" currency="XOF" locale="fr-FR" no-radius color="warning"  :min="1000" @formatted="formattedPrice = $event"/>
+              </div>
+              <small v-if="v$.priceValue.$error">{{ v$.priceValue.$errors[0].$message }}</small>
+
+            </div>
+            
+          </div>
+          <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Date début</label>
+                <input type="date"  name="date"   id="date"  v-model="debut" autofocus="autofocus" :min="minEndDate" />
+              </div>
+              <small v-if="v$.debut.$error">{{ v$.debut.$errors[0].$message }}</small>
+
+            </div>
+             <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Date Fin</label>
+                <input type="date"  name="date"   id="date"  v-model="fin" autofocus="autofocus" :min="minEndDate" />
+              </div>
+              <small v-if="v$.fin.$error">{{ v$.fin.$errors[0].$message }}</small>
+
+            </div>
+            
+          </div>
        <!-- <div class="row mb-3 mt-3 content-group">
          <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
                 
@@ -34,8 +73,36 @@
                </div>
     
        </div> -->
+       <div class="row mb-3 mt-3 content-group">
+           
+                  <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                   
+                   <input type="file" name="filee" id="filee" class="inputfile"  ref="fileText"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                     @change="handleFileUpload" />
+                   <label for="filee">
+                     <i class="bi bi-cloud-arrow-down"></i>
+                     Joindre un textel
+                   </label>
+               
+                 <!-- <small v-if="v$.selectedFile.$error">{{ v$.selectedFile.$errors[0].$message }}</small> -->
+               </div>
+       
+          </div>
       
+       <div class="row mb-3 mt-3 content-group">
+            <div class="col">
+              <div class="input-groupe">
+                <label for="titre">Prerequis</label>
+                <MazInputTags   v-model="prerequis" no-radius color="warning"  />
+              </div>
+              <small v-if="v$.prerequis.$error">{{ v$.prerequis.$errors[0].$message }}</small>
 
+            </div>
+          
+                 
+       
+          </div>
        <div class="row mb-3 mt-3 content-group">
          <div class="col">
            <div class="input-groupe">
@@ -71,7 +138,7 @@
                   id="output"
                   width="200"
                 /> -->
-                <img  :src="selectedActualites.Photos" id="output" width="200" />
+                <img  :src="selectedActualites?.Photo" id="output" width="200" />
               </div> 
          </div>       
        </div>
@@ -85,14 +152,14 @@
    </div>
  </div>
 
- <MazDialog v-model="publishDoc" title="Actualites mise à jour  avec success">
+ <MazDialog v-model="publishDoc" title="Formation mise à jour  avec success">
    <p>
-     Votre actualité a été mise à jour  avec succès !
+     Votre formation a été mise à jour  avec succès !
    
    </p>
    <template #footer="">
 
-     <div class="supp" @click="$router.push({ path: '/actualites' })" style="background-color: blue; "> Ok</div>
+     <div class="supp" @click="$router.push({ path: '/formations' })" style="background-color: blue; "> Ok</div>
 
 
 
@@ -104,6 +171,8 @@
 import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput';
 import useVuelidate from '@vuelidate/core';     
 import { require, lgmin,  ValidEmail,   } from '@/functions/rules';
+import MazInputPrice from 'maz-ui/components/MazInputPrice'
+import MazInputTags from 'maz-ui/components/MazInputTags'
 import axios from '@/lib/axiosConfig.js'
 import MazDialog from 'maz-ui/components/MazDialog'
 import Loading from '@/components/Loyout/loading.vue';
@@ -111,84 +180,162 @@ import Editor from '@tinymce/tinymce-vue'
 
 export default {
  components: {
-  MazPhoneNumberInput , MazDialog , Editor , Loading
+  MazPhoneNumberInput , MazDialog , Editor , Loading , MazInputPrice ,MazInputTags
 }, 
 props:['id'],
  data() {
      return {
-         v$:useVuelidate(), 
-         selectedFile: '',
-         loading:true,
-         titre:'',
-         description:'',
-         publishDoc:false,
-         selectedActualites:'',
-         publish:''
+      v$:useVuelidate(), 
+            selectedFile: '',
+            selectedText:'',
+            loading:false,
+            nom:'',
+            description:'',
+            priceValue:'',
+            categorie:'',
+            prerequis:[],
+            debut: '', // Date début
+            fin: '',   // Date fin
+            formattedPrice:'',
+            publishDoc:false,
+            Categories:[],
      }
  },
 
  validations: {
- titre: {
-     require,
-   lgmin: lgmin(2),
- },
-
- description: {
-   require,
-   lgmin: lgmin(2),
- },
-
-
-},
+      nom: {
+        require,
+      lgmin: lgmin(2),
+    },
+  
+    description: {
+      require,
+      lgmin: lgmin(2),
+    },
+    priceValue:{
+      require,
+    },
+    categorie:{
+      require
+    },
+    prerequis:{
+      require
+    },
+    debut:{
+      require
+    },
+    fin:{
+      require
+    },
+   
+ 
+  },
 computed: {
 
 loggedInUser() {
  return this.$store.getters['user/loggedInUser'];
 },
+minEndDate() {
+      // Calcule la date minimale autorisée (date actuelle)
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      let month = currentDate.getMonth() + 1;
+      month = month < 10 ? `0${month}` : month;
+      let day = currentDate.getDate();
+      day = day < 10 ? `0${day}` : day;
+
+      return `${year}-${month}-${day}`;
+    },
 },
 
 mounted() {
   this.fetchActualitesDetail()
+  this.fetchCategories()
 
  console.log("datadossiers", this.loggedInUser);
 },
 methods: {
- handleFileChange(event) {
-   console.log("File input change");
-   const file = event.target.files[0];
-   console.log("Selected file:", file);
-   this.selectedFile = file;
- },
- async fetchActualitesDetail() {
-        try {
-          const response = await axios.get(`/actualites`, {
-          headers: {
-            Authorization: `Bearer ${this.loggedInUser.token}`,
-            
-          },
+  handleFileChange(event) {
+      console.log("File input change");
+      const file = event.target.files[0];
+      console.log("Selected fileImage:", file);
+      this.selectedFile = file
+    },
 
-        });
-          console.log(response.data.data);
-          const actualites = response.data.data.data
-          const selectedActualites = actualites.find(service => service.id === parseInt(this.id));
-          console.log(selectedActualites);
-          this.selectedActualites = selectedActualites
-         // Attribuer les valeurs aux champs d'entrée
-        this.titre = selectedActualites.titre;
-        this.description = selectedActualites.content;
-        this.publish = selectedActualites.publish
+   
+    handleFileUpload() {
+      this.selectedText= this.$refs.fileText.files[0];
+      console.log( this.selectedText);
+    },
+    async fetchCategories() {
+      try {
+        await this.$store.dispatch('fetchCategories');
+        const Categories = JSON.parse(JSON.stringify(this.$store.getters.getCategories));
+        console.log(Categories);
+        this.Categories =  Categories.map(region => ({
+        label: region.Name        ,
+        value: region.id
+      }));
+      } catch (error) {
+        console.error("Erreur lors de la récupération des cours :", error.message);
+      }
+    },
+    async submit() {
+      this.v$.$touch();
+      console.log("bonjour");
+
+      if (this.v$.$errors.length == 0) {
+        console.log("bonjour");
+         this.loading = true;
+        const formData = new FormData();
+        formData.append("Name", this.nom);
+        formData.append("Description", this.description);
+        formData.append("Photos", this.selectedFile);
+        formData.append("IsActive", this.publish);
+        formData.append("Prerequis[]", this.prerequis);
+        formData.append("Fichier", this.selectedText);
+        formData.append("StartDate", this.debut);
+        formData.append("EndDate", this.fin);
+        formData.append("Cost", this.priceValue);
+        formData.append("Category_id", this.categorie);
+       
+       
         
-          this.loading= false
-        
+        console.log(formData);
+        console.log(
+          this.nom,this.fin ,  this.categorie, this.formattedPrice,
+          this.description, this.selectedText, this.debut,
+          this.selectedFile, this.prerequis , this.priceValue
+        );
+
+        try {
+          const response = await axios.post(`/courses/update/${this.id}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+          });
+          console.log("Réponse du téléversement :", response);
+          if (response.data.status === "success") {
+            this.loading = false
+            this.publishDoc = true
+            
+          } 
         } catch (error) {
-          console.error(error);
-          // Gestion des erreurs
+          console.error("Erreur lors du téléversement :", error);
+          if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
         }
-      },
+        }
+      } else {
+        console.log("cest pas bon ", this.v$.$errors);
+      }
+    },
 
       async fetchActualitesDetail() {
     try {
-       const response = await axios.get(`/services/detail/${this.id}/`, {
+       const response = await axios.get(`/courses/detail/${this.id}`, {
          headers: {
           
            Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -199,71 +346,27 @@ methods: {
         const selectedActualites = response.data.data;
         this.selectedActualites = selectedActualites
        console.log(selectedActualites);
-       this.titre = selectedActualites.Name;
+      
+       this.categorie = selectedActualites?.category?.id
+       this.nom = selectedActualites.Name;
+       this.priceValue = selectedActualites.Cost;
+       this.debut = selectedActualites.StartDate;
+       this.fin = selectedActualites.EndDate;
         this.description = selectedActualites.Description;
-        this.publish = selectedActualites.publish
+        this.prerequis =  JSON.parse(selectedActualites.Prerequires);
+        this.publish = selectedActualites.IsActive
          this.loading =false
        } 
      } catch (error) {
        console.error("Erreur lors du téléversement :", error);
+       if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }
      }
 },
 
- async submit() {
-   this.v$.$touch();
-   console.log("bonjour");
 
-   if (this.v$.$errors.length == 0) {
-     console.log("bonjour");
-      this.loading = true;
-     const formData = new FormData();
-
-      if (this.selectedFile === '') {
-        formData.append("Name", this.titre);
-        formData.append("Description", this.description);
-        formData.append("Photo", this.selectedActualites.Photos);
-        formData.append("Publish",  this.publish);
-
-        console.log('formData',this.selectedActualites.Photos);
-     console.log('rrrr',
-       this.titre,
-       this.description,
-       this.selectedFile
-     );
-      }else{
-        formData.append("Name", this.titre);
-     formData.append("Description", this.description);
-     formData.append("Photo", this.selectedFile);
-     formData.append("Publish",  this.publish);
-
-     console.log('formData',this.selectedFile);
-     console.log('rrrr22',
-       this.titre,
-       this.description,
-       this.selectedFile
-     );
-      }
-    
-     try {
-       const response = await axios.post(`/services/update/${this.id}/`, formData, {
-         headers: {
-          "Content-Type": "multipart/form-data",
-           Authorization: `Bearer ${this.loggedInUser.token}`,
-         },
-       });
-       console.log("Réponse du téléversement :", response);
-       if (response.data.status === "success") {
-         this.loading = false
-         this.publishDoc = true
-         
-       } 
-     } catch (error) {
-       console.error("Erreur lors du téléversement :", error);
-     }
-   } else {
-     console.log("cest pas bon ", this.v$.$errors);
-   }
- },
 
  async loadFile(event) {
       // this.loading = true;
