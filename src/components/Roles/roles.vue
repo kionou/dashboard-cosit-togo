@@ -174,7 +174,7 @@
     
       <MazDialog v-model="isdeletedoc" title="Suppression d'un personnel">
           <p>
-            Êtes-vous sûr de vouloir supprimer ce personnel ?
+            Êtes-vous sûr de vouloir supprimer ce role ?
           </p>
           <template #footer="{ close }">
     
@@ -189,7 +189,7 @@
     
         <MazDialog v-model="confirmdeletedoc" title="personnel supprimé">
           <p>
-            personnel supprimé avec succès !!
+            role supprimé avec succès !!
           </p>
           <template #footer="{ close }">
     
@@ -334,10 +334,10 @@
           this.isdeletedoc = false
           try {
             // Faites une requête pour supprimer l'élément avec l'ID itemId
-            const response = await axios.delete(`/categories/${this.ToDeleteId}`, {
+            const response = await axios.delete(`/roles/${this.ToDeleteId}`, {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
-                'Content-Type': 'multipart/form-data',
+                
     
               },
     
