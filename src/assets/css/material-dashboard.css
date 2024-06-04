@@ -4210,10 +4210,10 @@ fieldset:disabled .btn {
 
 .dropdown-menu[data-bs-popper] {
   top: 100%;
-  /* left: 0; */
-  right: 0;
+ 
+  right: 0 !important;
   border: 1px solid rgb(216, 216, 216);
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .dropdown-menu-start {

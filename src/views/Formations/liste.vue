@@ -243,7 +243,7 @@ paginatedItems() {
     this.loading = true
     
    let dataMpme = {
-    courses: id,
+    code: id,
    
   };
   console.log('dataMpme',dataMpme);
@@ -255,15 +255,16 @@ paginatedItems() {
           
           }
         });
-        console.log('Réponse du téléversement :', response.data.message);
+        console.log('Réponse du téléversement :', response.data);
         if (response.data.status === 'success') {
-         if (response.data.message === "Unpublished") {
+         if (response.data.data.IsActive === 1) {
           console.log('rrrrr');
-          this.publier = await 'Votre actualité a été retirée de la liste avec succès.'
+          this.publier = await 'Votre formation a été publiée avec succès !'
+
 
          } else {
           console.log('rrrrr2222');
-          this.publier = await 'Votre actualité a été publiée avec succès !'
+          this.publier = await 'Votre formation a été retirée de la liste avec succès.'
 
           
          }

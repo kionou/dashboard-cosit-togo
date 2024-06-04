@@ -29,6 +29,8 @@
                     { label: 'Utilisateurs', to: { name: 'utilisateurs' } },
                     { label: 'Roles & Permissions', to: { name: 'roles-permissions' } },
                     { label: 'Droits', to: { name: 'droits' } },
+                    { label: 'Menu', to: { name: 'menu' } },
+                    { label: 'Assignation', to: { name: 'assignation' } },
 
                   ]">
                     Utilisateurs
@@ -43,6 +45,7 @@
                     { label: 'Formation', to: { name: 'formations' } },
                     { label: 'Services', to: { name: 'services' } },
                     { label: 'Projets', to: { name: 'projets' } },
+                    { label: 'Membres', to: { name: 'teams-membres' } },
                     { label: 'Types payements', to: { name: 'type-payement' } },
                   ]">
                     Parametrage
@@ -71,7 +74,7 @@
                   <div class="btnCt " role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
                     <div class="image">
-                      <img src="../../assets/site/team-2.jpg" alt="">
+                      <img :src="loggedInUser?.profile" alt="">
                     </div>
                   </div>
                   <ul class="dropdown-menu menu">
@@ -95,6 +98,7 @@
 </template>
 <script>
 import MazDropdown from 'maz-ui/components/MazDropdown'
+import { mapGetters } from 'vuex';
 export default {
   component: {
     MazDropdown
@@ -104,6 +108,22 @@ export default {
       
     }
   },
+
+  computed: {
+      ...mapGetters('user', ['isLoggedIn']),
+     shouldShowNavbar() {
+      this.$store.dispatch('user/loadLoggedInUser')
+      
+        return (
+          this.isLoggedIn &&
+          this.$route.path !== '/connexion' 
+        );
+      },
+      loggedInUser() {
+        return this.$store.getters['user/loggedInUser'];
+      },
+     
+    },
 
   methods: {
     async logout() {
@@ -254,5 +274,11 @@ height: auto;
   justify-content: center;
   color: var(--color-default);
 
+}
+
+.dropdown-menu {
+  
+    left: auto !important;
+  ;
 }
 </style>

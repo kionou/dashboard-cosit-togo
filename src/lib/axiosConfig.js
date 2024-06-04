@@ -4,7 +4,7 @@ import axios from 'axios';
 // Configuration d'Axios
 // https://cors-proxy.fringe.zone/
 const instance = axios.create({
-  baseURL: 'https://cors-proxy.fringe.zone/https://api.cosit-togo.com/api/', // Remplacez par l'URL de votre API
+  baseURL: 'https://api.cosit-togo.com/api/', // Remplacez par l'URL de votre API
  
   headers: {
     'Content-Type': 'application/json',

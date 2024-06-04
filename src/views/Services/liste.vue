@@ -244,13 +244,13 @@ paginatedItems() {
     this.loading = true
     
   let dataMpme = {
-    service: id,
+    code: id,
    
   };
 console.log('dataMpme',dataMpme);
 
     try {
-        const response = await axios.post('/projects/publish', dataMpme, {
+        const response = await axios.post('/services/publish', dataMpme, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           
@@ -258,13 +258,14 @@ console.log('dataMpme',dataMpme);
         });
         console.log('Réponse du téléversement :', response.data.message);
         if (response.data.status === 'success') {
-         if (response.data.message === "Unpublished") {
+         if (response.data.data.Publish === 1) {
           console.log('rrrrr');
-          this.publier = await 'Votre service a été retiré de la liste avec succès.'
+          this.publier = await 'Votre service a été publié avec succès !'
+
 
          } else {
           console.log('rrrrr2222');
-          this.publier = await 'Votre service a été publié avec succès !'
+          this.publier = await 'Votre service a été retiré de la liste avec succès.'
 
           
          }

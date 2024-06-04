@@ -81,7 +81,7 @@
             <i class="bi bi-trash"></i>
           </span>
 
-          <span style="--i:1" class="opens" v-if="cathegorie.IsActive === 1">
+          <span style="--i:1" class="opens" v-if="cathegorie.IsActive === 0">
             <i class="bi bi-power" @click="publish(cathegorie.id )"></i>
           </span>
           <span style="--i:1" class="open" v-else>
@@ -396,7 +396,7 @@ paginatedItems() {
     this.loading = true
     
   let dataMpme = {
-    categorie: id,
+    code: id,
    
   };
 console.log('dataMpme',dataMpme);

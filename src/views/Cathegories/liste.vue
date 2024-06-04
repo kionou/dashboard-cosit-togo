@@ -392,7 +392,7 @@ paginatedItems() {
     this.loading = true
     
   let dataMpme = {
-    categorie: id,
+    code: id,
    
   };
 console.log('dataMpme',dataMpme);
@@ -408,11 +408,12 @@ console.log('dataMpme',dataMpme);
         if (response.data.status === 'success') {
          if (response.data.message === "Unpublished") {
           console.log('rrrrr');
-          this.publier = await 'Votre service a été retiré de la liste avec succès.'
+          this.publier = await 'Votre service a été publié avec succès !'
+
 
          } else {
           console.log('rrrrr2222');
-          this.publier = await 'Votre service a été publié avec succès !'
+          this.publier = await 'Votre service a été retiré de la liste avec succès.'
 
           
          }

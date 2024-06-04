@@ -37,10 +37,20 @@ import RolePermission from '../views/Role&Permission/liste.vue'
 
 import Droits from '../views/Droits/liste.vue'
 
+import Menu from '../views/Menu/liste.vue'
+import MenuDetail from '../views/Menu/detail.vue'
+
+import Assignation from '../views/Assignation/liste.vue'
+import AssignationDetail from '../views/Assignation/detail.vue'
+
+import TeamsListe from '../views/Teams-membres/liste.vue'
 
 
 
-import Test from '../views/test.vue'
+
+
+
+import Test from '../views/test2.vue'
 
 
 
@@ -90,6 +100,14 @@ const router = createRouter({
        { path: '/roles-permissions' , name: 'roles-permissions' , component:RolePermission , meta:{requiresAuth :true}},
 
        { path: '/droits' , name: 'droits' , component:Droits , meta:{requiresAuth :true}},
+
+       { path: '/menu' , name: 'menu' , component:Menu , meta:{requiresAuth :true}},
+       { path: '/menu/:id' , name: 'menu-detail' , component:MenuDetail , meta:{requiresAuth :true} , props:true},
+
+       { path: '/assignation' , name: 'assignation' , component:Assignation , meta:{requiresAuth :true}},
+       { path: '/assignation/:id' , name: 'assignation-detail' , component:AssignationDetail , meta:{requiresAuth :true} , props:true},
+
+       { path: '/teams-membres', name: 'teams-membres', component: TeamsListe,  meta: { requiresAuth: true }},
 
 
 

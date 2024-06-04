@@ -1,7 +1,7 @@
 <template >
-    <Loading v-if="loading" style="z-index: 999999;"></Loading>
    <div>
        
+    <Loading v-if="loading" style="z-index: 999999;"></Loading>
 
          <!-- Start of blog page section
        ============================================= -->
@@ -98,6 +98,7 @@ export default {
    methods: {
      
    async fetchActualites() {
+    
     try {
        const response = await axios.get(`/courses/detail/${this.id}/`, {
          headers: {

@@ -1,8 +1,7 @@
 <template >
 
-        <div>
     <Loading v-if="loading" style="z-index: 99999;"></Loading>
-
+        <div>
           <div class="row">
            
             <div class="containerr">
@@ -21,110 +20,79 @@
          
         </div>
     
-        <section class="aplpg-blog-section">
-            <div class="container-general">
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <div class="aplpg-title-area text-center wow fadeInUp">
+        <section id="applghu-service" class="applghu-service-area" data-background="assets/img/studio-img-32/service-bg.jpg">
+			<div class="container">
+
+				<!-- Section Heading Start -->
+				<div class="row">
+					<div class="col-xl-12 text-center">
+						<div class="saas_two_section_title saas2-headline text-center">
+        			
                             <div class="aplpg-headline">
-                                <h3>Liste des clients</h3>
+                                <h3>Liste des membres</h3>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="aplpg-blog-content">
-                    <div class="aplpg-blog-slider">
-              <div v-if="paginatedItems.length === 0" class="noresul">
-          <span> Vous n'avez pas encore de personnel, vous pouvez également en ajouter un !! </span>
-        </div>
-    
-        <div class="container-fluid " v-else>
-            <div class="row">
-        <div class="col-12">
-          <div class="card ">
-           
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Acteur</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Fonction</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Téléphone</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Crée</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="user in paginatedItems" :key="user.id">
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            
-                            <img  v-if="user.profile === null" src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                            <img  v-else :src="user.profile" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ user.Prenoms }} {{ user.Nom }}</h6>
-                            <p class="text-xs text-secondary mb-0">{{ user.email }}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ user.roles[0].name }}</p>
-                       
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <p class="text-xs font-weight-bold mb-0">{{ user.Whatsapp }}</p>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold"> {{ formatCreatedAt(user.created_at) }}</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <div class="sci">
-    
-                        <span style="--i:1" class="update">
-                        <i class="bi bi-pen" @click="updatedoc(user.id)"></i>
-                        
-                        </span>
-                        <span style="--i:2" @click="hamdledeletedoc(user.id)" class="delete">
-                        <i class="bi bi-trash"></i>
-                        </span>
+				</div>
+					</div>
+				</div>
+				<!-- Section Heading End -->
+				<div v-if="paginatedItems.length === 0" class="noresul">
+                      <span> Il n'y a aucun membre disponible </span>
+                      </div> 
+				<div class="row justify-content-center" v-else>
+					<div v-for="membre in paginatedItems" :key="membre.id" class="col-xl-3 col-md-4">
+						<div class="applghu-single-service wow fadeInUp" data-wow-delay="0.2s">
+							<div class="applghu-service-icon-box">
+								<!-- <img :src="membre.Photo" alt=""> -->
+                <img v-if="isValidImage(membre.MemberPhoto)" :src="membre.MemberPhoto" alt="">
+                <img v-else src="@/assets/site/logo1.jpeg" alt="">
+							</div>
+							<h3>{{ membre.MemberNames }}</h3>
+							<p> {{ membre.MemberPosition }} </p>
+							<p> {{ membre.MemberPhone }} </p>
+							<p> {{ membre.MemberAddress }} </p>
+							<p v-if=" membre.Sexe === 'M'"> Masculin </p>
+							<p v-else> Feminin </p>
+                            <div class="aplpg-blog-meta">
+								
+                                <span>
+                                  <div class="sci">
 
-                        <span style="--i:1" class="opens" v-if="user.publish === 1">
-                        <i class="bi bi-power" @click="publish(user.id , user.publish)"></i>
-                        </span>
-                        <span style="--i:1" class="open" v-else>
-                        <i class="bi bi-power" @click="publish(user.id , user.publish)"></i>
-                        </span>
-
-                    </div>
-                      </td>
-                    </tr>
-
+                          <span style="--i:1" class="update">
+                            <i class="bi bi-pen" @click="updatedoc(membre.id)"></i>
+                          </span>
+                          <span style="--i:2" @click="hamdledeletedoc(membre.id)" class="delete">
+                            <i class="bi bi-trash"></i>
+                          </span>
+                          <span style="--i:1" class="opens" v-if="membre.Publish === 0" >
+                            <i class="bi bi-power" @click="HandlePublish(membre.id )" ></i>
+                          </span>
+                          <span style="--i:1" class="open" v-else>
+                            <i class="bi bi-power" @click="HandlePublish(membre.id )"></i>
+                          </span>
                 
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        </div>
-    
-                    </div>
-                </div>
-       
-            </div>
-       
-        </section>
+                        </div>
+                                </span>
+                                            </div>
+							
+						</div>
+					</div>
+
+					
+					
+
+					
+					
+				
+				</div>
+			</div>
+		</section>
       <div class="container_pagination">
       <Pag :current-page="currentPage" :total-pages="totalPages" @page-change="updateCurrentPage" />
     </div>
     
     
-    <MazDialog v-model="AddCathegorie" title="Ajouté un personnel"  width="600px">
-        <div class="container my-auto py-4  bg-white" id="container">
+    <MazDialog v-model="AddCathegorie" title="Ajouté un membre"  width="600px">
+        <div class="container my-auto  bg-white" id="container">
                             <div class="row">
                                 <div class="col-11 col-lg-11 mx-auto">
                                     
@@ -133,7 +101,7 @@
                                         <div class="row mb-3 mt-3 content-group">
                                         <div class="col">
                                         <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Nom</label>
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Nom complet</label>
                                             <MazInput v-model="step1.nom"  no-radius color="warning" type="text"/>
                                              <small v-if="v$.step1.nom.$error">{{v$.step1.nom.$errors[0].$message}}</small>
                                         </div>
@@ -142,9 +110,9 @@
                                         </div>
                                         <div class="col">
                                         <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Prenom</label>
-                                            <MazInput v-model="step1.prenom"  no-radius color="warning" type="text"/>
-                                            <small v-if="v$.step1.prenom.$error">{{v$.step1.prenom.$errors[0].$message}}</small>
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Fonction</label>
+                                            <MazInput v-model="step1.fonction"  no-radius color="warning" type="text"/>
+                                            <small v-if="v$.step1.fonction.$error">{{v$.step1.fonction.$errors[0].$message}}</small>
 
                                         </div>
                                         
@@ -177,25 +145,38 @@
                                          <div class="row mb-3 mt-3 content-group">
                                         <div class="col">
                                         <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Mot de passe </label>
-                                            <MazInput v-model="step1.password"  no-radius color="warning" type="password"/>
-                                            <small v-if="v$.step1.password.$error">{{v$.step1.password.$errors[0].$message}}</small>
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Genre</label>
+                                            <MazSelect v-model="step1.sexe" :options="sexes" no-radius color="warning" search />
+                                            <small v-if="v$.step1.sexe.$error">{{v$.step1.sexe.$errors[0].$message}}</small>
                                         </div>
                                         
 
                                         </div>
                                         <div class="col">
                                         <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Confirmé leMot de passe </label>
-                                            <MazInput v-model="step1.confirmer_password"  no-radius color="warning" type="password"/>
-                                            <small v-if="v$.step1.confirmer_password.$error">{{v$.step1.confirmer_password.$errors[0].$message}}</small>
-                                            <small v-if="!validatePasswordsMatch()">Les mots de passe ne correspondent pas.</small>
-
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Est-il un expert ?</label>
+                                            <MazSelect v-model="step1.expert" :options="choix" no-radius color="warning" search />
+                                            <small v-if="v$.step1.expert.$error">{{v$.step1.expert.$errors[0].$message}}</small>
                                         </div>
                                         
 
                                         </div>
                                          </div>
+
+                                         <div class="row mb-3 mt-3 content-group">
+            <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                   
+                      <input type="file" name="file" id="file" class="inputfile"  ref="fileInput"
+                        accept="image/*"
+                        @change="handleFileChange" />
+                      <label for="file">
+                        <i class="bi bi-cloud-arrow-down"></i>
+                      Joindre une image
+                      </label>
+                  </div>
+                 
+       
+          </div>
                                          <div class="btn">
                                                 <button class="sign" @click.prevent="submit">Soumettre</button>
                                               
@@ -204,48 +185,112 @@
                                  
                                 </div>
                             </div>
-                        </div>
+         </div>
         
     </MazDialog>
     
-    <MazDialog v-model="UpdateCathegorie" title="Mise à d'un personnel"  width="600px">
-      <div class=" d-flex align-items-center py-5">
-                            <div class="container my-auto   bg-white" id="container">
-                                <div class="row">
-                                    <div class="col-11 col-lg-11 mx-auto">
-                                       
+    <MazDialog v-model="UpdateCathegorie" title="Mise à d'un personnel"  width="700px">
+        <div class="container my-auto  bg-white" id="container">
+                            <div class="row">
+                                <div class="col-11 col-lg-11 mx-auto">
+                                    
+                                    <small>{{ error }}</small>
+                                    <form data-request="onSignin" class="login_form">
+                                        <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Nom complet</label>
+                                            <MazInput v-model="step2.nom"  no-radius color="warning" type="text"/>
+                                             <!-- <small v-if="v$.step2.nom.$error">{{v$.step2.nom.$errors[0].$message}}</small> -->
+                                        </div>
                                         
-                                        <small>{{ error }}</small>
-                                        <form data-request="onSignin" class="login_form">
-                                             <div class="form-group">
-                                                <label class="font-weight-600 text-color-orange" for="nom">Nom</label>
-                                                <MazInput v-model="step2.nom"  no-radius color="warning" type="text"/>
-                                                <small v-if="v$.step2.nom.$error">{{v$.step2.nom.$errors[0].$message}}</small>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="font-weight-600 text-color-orange" for="contenu">Description</label>
-                                                <MazTextarea v-model="step2.contenu" name="comment" id="comment" color="warning" />
-                                             
-                                                <small v-if="v$.step2.contenu.$error">{{v$.step2.contenu.$errors[0].$message}}</small>
-                                            </div>
-    
-                                            <div class="btn">
-                                                <button class="sign" @click.prevent="submit">Soumettre</button>
+
+                                        </div>
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Fonction</label>
+                                            <MazInput v-model="step2.fonction"  no-radius color="warning" type="text"/>
+                                            <small v-if="v$.step2.fonction.$error">{{v$.step2.fonction.$errors[0].$message}}</small>
+
+                                        </div>
+                                        
+
+                                        </div>
+                                         </div>
+                                        
+                                         <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Adresse Email </label>
+                                            <MazInput v-model="step2.email"  no-radius color="warning" type="email"/>
+                                            <small v-if="v$.step2.email.$error">{{v$.step2.email.$errors[0].$message}}</small>
+
+                                        </div>
+                                        
+
+                                        </div>
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                           
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Numéro Téléphonique </label>
+                                            <MazPhoneNumberInput v-model="step2.phoneNumber" show-code-on-list no-radius color="warning" defaultCountryCode="TG"
+                                            :ignored-countries="['AC']" @update="results = $event" :success="results?.isValid"  country-locale="fr-FR" noFlags="true" />
+                                            <small v-if="v$.step2.phoneNumber.$error">{{v$.step2.phoneNumber.$errors[0].$message}}</small>
+                                        </div>
+                                        </div>
+                                         </div>
+
+                                         <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Genre</label>
+                                            <MazSelect v-model="step2.sexe" :options="sexes" no-radius color="warning" search />
+                                            <small v-if="v$.step2.sexe.$error">{{v$.step2.sexe.$errors[0].$message}}</small>
+                                        </div>
+                                        
+
+                                        </div>
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Est-il un expert ?</label>
+                                            <MazSelect v-model="step2.expert" :options="choix" no-radius color="warning" search />
+                                            <small v-if="v$.step2.expert.$error">{{v$.step2.expert.$errors[0].$message}}</small>
+                                        </div>
+                                        
+
+                                        </div>
+                                         </div>
+
+                                         <div class="row mb-3 mt-3 content-group">
+            <div class="col mt-4" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                   
+                      <input type="file" name="file" id="file" class="inputfile"  ref="fileInput"
+                        accept="image/*"
+                        @change="handleFileChangeUpdate" />
+                      <label for="file">
+                        <i class="bi bi-cloud-arrow-down"></i>
+                      Joindre une image
+                      </label>
+                  </div>
+                 
+       
+          </div>
+                                         <div class="btn">
+                                                <button class="sign" @click.prevent="submitUpdate">Soumettre</button>
                                               
                                               </div>
-                                        </form>
-                                       
-                                    </div>
+                                    </form>
+                                 
                                 </div>
                             </div>
-                        </div>
+         </div>
         
     </MazDialog>
     
     
       <MazDialog v-model="isdeletedoc" title="Suppression d'un personnel">
           <p>
-            Êtes-vous sûr de vouloir supprimer ce personnel ?
+            Êtes-vous sûr de vouloir supprimer ce membre ?
           </p>
           <template #footer="{ close }">
     
@@ -256,11 +301,11 @@
           </template>
         </MazDialog>
     
-    date
+    
     
         <MazDialog v-model="confirmdeletedoc" title="personnel supprimé">
           <p>
-            personnel supprimé avec succès !!
+            membre supprimé avec succès !!
           </p>
           <template #footer="{ close }">
     
@@ -315,54 +360,100 @@
           publier:'',
           publishDoc:false,
           currentPage: 1,
-          itemsPerPage: 2,
+          itemsPerPage: 12,
           totalPageArray: [], 
           switchValue: {},
           v$: useVuelidate(),
           publish:'',
           error:'',
-            step1:{
-
+          step1:{
+                nom: '',
+                fonction: '',
                 email: '',
-      phoneNumber: '',
-      password: '',
-      confirmer_password: '',
-      nom: '',
-      prenom: '',
-            }
+                phoneNumber: '',
+                sexe: '',
+                expert: '',
+                selectedFile: '',
+               
+            },
+          step2:{
+                nom: '',
+                fonction: '',
+                email: '',
+                phoneNumber: '',
+                sexe: '',
+                expert: '',
+                selectedFile: '',
+               
+            },
+        sexes: [
+        { label: "Masculin", value: "M" },
+        { label: "Féminin", value: "F" },
+      ],
+      choix: [
+        { label: "Oui", value: 1 },
+        { label: "Non", value: 0 },
+      ],
         
           
           
         }
       },
       validations: {
+    
         step1:{
-            email: {
-      require,
-    },
-    phoneNumber: {
-      require,
-    },
-    password: {
-      require,
-      lgmin: lgmin(8),
-      lgmax: lgmax(20),
-    },
-    confirmer_password: {
-      require,
-      lgmin: lgmin(8),
-      lgmax: lgmax(20),
-    },
+    
     nom: {
       require,
       lgmin: lgmin(2),
       lgmax: lgmax(20),
     },
-    prenom: {
+    fonction: {
       require,
       lgmin: lgmin(2),
       lgmax: lgmax(20),
     },
+    email: {
+            require,
+    },
+    phoneNumber: {
+      require,
+    },
+    sexe: {
+      require,
+    },
+    expert: {
+      require,
+    },
+   
+   
+        },
+        step2:{
+    
+    nom: {
+      require,
+      lgmin: lgmin(2),
+      lgmax: lgmax(20),
+    },
+    fonction: {
+      require,
+      lgmin: lgmin(2),
+      lgmax: lgmax(20),
+    },
+    email: {
+            require,
+    },
+    phoneNumber: {
+      require,
+    },
+    sexe: {
+      require,
+    },
+    expert: {
+      require,
+    },
+   
+   
         }
    
   
@@ -390,6 +481,19 @@
         this.fetchActualites()
       },
       methods: {
+        handleFileChange(event) {
+      console.log("File input change");
+      const file = event.target.files[0];
+      console.log("Selected fileImage:", file);
+      this.step1.selectedFile = file
+
+    },
+    handleFileChangeUpdate(event) {
+      console.log("File input change");
+      const file = event.target.files[0];
+      console.log("Selected fileImage:", file);
+      this.step2.selectedFile = file
+    },
         formatCreatedAt(createdAt) {
       return moment(createdAt).format('DD/MM/YY');
     },
@@ -398,7 +502,7 @@
     },
         async fetchActualites() {
             try {
-              const response = await axios.get('/users', {
+              const response = await axios.get('/teams', {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
                 
@@ -406,15 +510,11 @@
     
             });
               console.log(response.data.data.data);
-              const nonStudentUsers = response.data.data.data.filter(user => {
-            return user.roles.some(role => role.name === 'STUDENTS');
-        });
+              const nonStudentUsers = response.data.data.data
+               this.ActualitesOptions = nonStudentUsers;
+              console.log(nonStudentUsers);
 
-        // Utilisez nonStudentUsers dans votre composant
-        this.ActualitesOptions = nonStudentUsers;
-        console.log(nonStudentUsers);
-
-        this.loading = false;
+                  this.loading = false;
             
             } catch (error) {
               console.error('errorqqqqq',error);
@@ -439,7 +539,7 @@
           this.isdeletedoc = false
           try {
             // Faites une requête pour supprimer l'élément avec l'ID itemId
-            const response = await axios.delete(`/categories/${this.ToDeleteId}`, {
+            const response = await axios.delete(`/teams/${this.ToDeleteId}`, {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
                 'Content-Type': 'multipart/form-data',
@@ -469,43 +569,29 @@
     
         },
     
-      async publish(id ,statut ){
+      async HandlePublish(id){
         this.loading = true
         
-        let statutTraitement;
-      if (statut === 1) {
-        statutTraitement = 0;
-      } else if (statut === 0) {
-        statutTraitement = 1;
-      } else {
-        // Gérer le cas où la valeur de statut n'est ni 0 ni 1 (vous pouvez ajouter une logique personnalisée ici)
-        statutTraitement = null; // Ou une autre valeur par défaut si nécessaire
-      }
-    
       let dataMpme = {
-        project: id,
-        do:statutTraitement
-    
-        
-      };
-    console.log('dataMpme',dataMpme);
+        code: id,};
+         console.log('dataMpme',dataMpme);
     
         try {
-            const response = await axios.post('/actualites/publish-actualite', dataMpme, {
+            const response = await axios.post('/teams/publish', dataMpme, {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
               
               }
             });
-            console.log('Réponse du téléversement :', response.data.message);
+            console.log('Réponse du téléversement :', response);
             if (response.data.status === 'success') {
-             if (response.data.message === "Unpublished") {
+             if (response.data.data.Publish === 0) {
               console.log('rrrrr');
-              this.publier = await 'Votre actualité a été retirée de la liste avec succès.'
+              this.publier = await "Votre membre n'est plus considéré comme un expert maintenant !"
     
              } else {
               console.log('rrrrr2222');
-              this.publier = await 'Votre actualité a été publiée avec succès !'
+              this.publier = await "Votre membre est un expert maintenant !"
     
               
              }
@@ -542,11 +628,7 @@
           return  this.ActualitesOptions.slice(startIndex, endIndex);
         },
     
-        updateSwitchValue(categoryId) {
-        this.switchValue[categoryId] = !this.switchValue[categoryId];
-        console.log( 'fdddddddddd',this.switchValue[categoryId]);
-        
-      },
+      
     
       OpenAddCathegorie(){
         this.AddCathegorie = true
@@ -561,17 +643,27 @@
           if (this.v$.$errors.length == 0) {
             console.log("bonjour");
              this.loading = true;
-            const dataCath = {
-    
-              Name:this.step1.nom,
-              Description:this.step1.contenu,
-              isActive:0
-            }
-           
-            console.log(dataCath);
+             const formData = new FormData();
+            formData.append("MemberNames", this.step1.nom);
+            formData.append("MemberPosition", this.step1.fonction);
+            formData.append("Photo", this.step1.selectedFile);
+            formData.append("MemberPhone", this.step1.phoneNumber);
+            formData.append("IsExpert", this.step1.expert);
+            formData.append("Publish", 1);
+            formData.append("MemberAddress", this.step1.email);
+            formData.append("Sexe", this.step1.sexe);
+       
+       
+        
+        console.log(formData);
+        console.log(
+          this.step1.nom,this.step1.fonction ,  this.step1.phoneNumber, this.step1.expert,
+          this.step1.email, this.step1.sexe,
+          this.step1.selectedFile,
+        );
            
             try {
-              const response = await axios.post("/categories", dataCath, {
+              const response = await axios.post("/teams", formData, {
                 headers: {
                   "Content-Type": "multipart/form-data",
                   Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -581,7 +673,7 @@
               if (response.data.status === "success") {
                await this.fetchActualites()
                this.AddCathegorie = false
-               this.publier = " Votre cathégorie a été crée avec succès !"
+               this.publier = " Votre membre a été crée avec succès !"
                 this.publishDoc = true
                 this.loading = false
                 
@@ -603,7 +695,7 @@
       this.loading = true
     
         try {
-           const response = await axios.get(`/categories/detail/${id}`, {
+           const response = await axios.get(`/teams/detail/${id}`, {
              headers: {
               
                Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -614,17 +706,23 @@
             const selectedActualites = response.data.data;
             this.selectedActualites = selectedActualites
            console.log(selectedActualites);
-           this.step2.nom = selectedActualites.Name;
-            this.step2.contenu = selectedActualites.Description;
-            this.publish = selectedActualites.isActive
+            this.step2.nom = selectedActualites.MemberNames;
+            this.step2.fonction = selectedActualites.MemberPosition;
+            this.step2.expert = selectedActualites.IsExpert
+            this.step2.phoneNumber = selectedActualites.MemberPhone
+            this.step2.email = selectedActualites.MemberAddress
+            this.step2.sexe = selectedActualites.Sexe
+            this.publish = selectedActualites.Publish
             this.ToDeleteId = id
              this.loading =false
+            //  MemberPhoto
            } 
          } catch (error) {
-           console.error("Erreur lors du téléversement :", error);
-           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-              this.$router.push("/");  //a revoir
-            }
+          if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }       console.error("Erreur lors du téléversement :", error);
+      
          }
       },
     async  submitUpdate(){
@@ -636,19 +734,29 @@
          console.log("bonjour");
           this.loading = true;
        
-                    const dataCath = {
-    
-              Name:this.step2.nom,
-              Description:this.step2.contenu,
-              isActive: this.publish
-              }
-    console.log('dataCath',dataCath,this.ToDeleteId);
+             const formData = new FormData();
+            formData.append("MemberNames", this.step2.nom);
+            formData.append("MemberPosition", this.step2.fonction);
+            formData.append("Photo", this.step2.selectedFile);
+            formData.append("MemberPhone", this.step2.phoneNumber);
+            formData.append("IsExpert", this.step2.expert);
+            formData.append("Publish", this.publish);
+            formData.append("MemberAddress", this.step2.email);
+            formData.append("Sexe", this.step2.sexe);
+            formData.append("id", this.ToDeleteId);
+            console.log(formData);
+        console.log(
+          this.step2.nom,this.step2.fonction ,  this.step2.phoneNumber, this.step2.expert,
+          this.step2.email, this.step2.sexe, this.publish, this.ToDeleteId,
+          this.step2.selectedFile,
+        );
     
          try {
-           const response = await axios.put(`/categories/${this.ToDeleteId}`,dataCath, {
+           const response = await axios.post(`/teams/update/${this.ToDeleteId}`,formData, {
              headers: {
               
                Authorization: `Bearer ${this.loggedInUser.token}`,
+               "Content-Type": "multipart/form-data",
              },
            });
            console.log("Réponse du téléversement :", response);
@@ -670,15 +778,30 @@
        } else {
          console.log("cest pas bon ", this.v$.$errors);
        }
-      }
+      },
+      isValidImage(src) {
+      console.log(src);
+      
+      return src && src.indexOf('.') !== -1;
+    },
         
     
       },
         
     }
     </script>
-    <style lang="css">
-    
+    <style lang="css" scoped>
+     @import url("@/assets/css/flaticon-32.css");
+		/* import "@/assets/css/rs6-32.css"
+		import "@/assets/css/revulation-arrow-32.css" */
+	
+     @import url("../../assets/css/style-32.css");
+
+     .applghu-service-area .applghu-single-service .applghu-service-icon-box img{
+	width: 100%;
+	height: 100%;
+
+}
     .containerr{
     /* border: 1Px solid red; */
     /* background-color:var(--color-default); */
@@ -929,5 +1052,68 @@
     .aplpg-blog-section {
     padding: 0px 0 50px 0 !important;
 }
-        
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--color-primary);
+    /* background-color: black; */
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+
+    border: 1px solid #e5e7eb;
+}
+
+
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+     
+
+.applghu-service-area .applghu-single-service {
+    padding: 0!important;  
+    height: 380px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.applghu-service-area .applghu-single-service .applghu-service-icon-box {
+    width: 130px !important;
+    height: 130px !important;
+    
+}
+
+.applghu-service-area .applghu-single-service p {
+   margin-bottom: 0px !important;
+}
+
+.applghu-service-area .applghu-single-service .applghu-service-btn[data-v-4afcea9e] {
+  
+    position: static !important;
+    border: 1px solid blue;
+   
+}
+
+
+@media screen and (max-width: 1280px) {
+
+.applghu-service-area .applghu-single-service {
+max-width: 330px !important;
+
+}
+}
+
     </style>

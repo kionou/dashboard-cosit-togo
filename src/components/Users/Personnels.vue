@@ -1,12 +1,11 @@
 <template >
 
-    <Loading v-if="loading" style="z-index: 99999;"></Loading>
         <div>
+        <Loading v-if="loading" style="z-index: 99999;"></Loading>
+
           <div class="row">
            
             <div class="containerr">
-        
-         
            <div class="content">
             <div class="search-box">
       <input class="search-input" type="text" placeholder="Search something..">
@@ -60,7 +59,7 @@
                         <div class="d-flex px-2 py-1">
                           <div>
                             
-                            <img  v-if="user.profil === null" src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                            <img  v-if="user.profile === null" src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                             <img  v-else :src="user.profile" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
@@ -196,7 +195,7 @@
                                         </div>
                                          </div>
                                          <div class="btn">
-                                                <button class="sign" @click.prevent="submit">Soumettre</button>
+                                                <button class="sign" @click.prevent="Handlesubmit">Soumettre</button>
                                               
                                               </div>
                                     </form>
@@ -552,7 +551,7 @@
        
     
       },
-      async submit(){
+      async Handlesubmit(){
     
         this.v$.step1.$touch();
           console.log("bonjour");
@@ -562,17 +561,20 @@
              this.loading = true;
             const dataCath = {
     
-              Name:this.step1.nom,
-              Description:this.step1.contenu,
-              isActive:0
+              email:this.step1.email,
+              password:this.step1.password,
+              password_confirmation:this.step1.confirmer_password,
+              Nom:this.step1.nom,
+              Prenoms:this.step1.prenom,
+              Whatsapp:this.step1.phoneNumber,
+              role:1,
             }
            
             console.log(dataCath);
            
             try {
-              const response = await axios.post("/categories", dataCath, {
+              const response = await axios.post("/register/system-user", dataCath, {
                 headers: {
-                  "Content-Type": "multipart/form-data",
                   Authorization: `Bearer ${this.loggedInUser.token}`,
                 },
               });
@@ -580,7 +582,7 @@
               if (response.data.status === "success") {
                await this.fetchActualites()
                this.AddCathegorie = false
-               this.publier = " Votre cathégorie a été crée avec succès !"
+               this.publier = " Votre personnel a été crée avec succès !"
                 this.publishDoc = true
                 this.loading = false
                 
@@ -602,23 +604,21 @@
       this.loading = true
     
         try {
-           const response = await axios.get(`/categories/detail/${id}`, {
-             headers: {
-              
-               Authorization: `Bearer ${this.loggedInUser.token}`,
-             },
-           });
-           console.log("Réponse du téléversement :", response);
-           if (response.data.status === "success") {
-            const selectedActualites = response.data.data;
-            this.selectedActualites = selectedActualites
-           console.log(selectedActualites);
-           this.step2.nom = selectedActualites.Name;
-            this.step2.contenu = selectedActualites.Description;
-            this.publish = selectedActualites.isActive
-            this.ToDeleteId = id
-             this.loading =false
-           } 
+          const user = this.ActualitesOptions.find(user => user.id === id);
+
+if (user) {
+    // Utilisez les informations récupérées de l'objet user
+    console.log('Informations de l\'utilisateur:', user);
+
+this.step2.code = user.CodeIndicateur,
+this.step2.description = user.email,
+this.step2.description = user.password,
+this.step2.description = user.password_confirmation,
+this.step2.description = user.Nom,
+this.ToId = id
+} else {
+    console.log('Utilisateur non trouvé avec l\'ID', id);
+}
          } catch (error) {
           if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
             await this.$store.dispatch('user/clearLoggedInUser');

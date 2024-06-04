@@ -26,7 +26,7 @@
                     <div class="col-lg-8 offset-lg-2">
                         <div class="aplpg-title-area text-center wow fadeInUp">
                             <div class="aplpg-headline">
-                                <h3>Liste des Droits</h3>
+                                <h3>Liste des Menus</h3>
                             </div>
                         </div>
                     </div>
@@ -34,86 +34,34 @@
                 <div class="aplpg-blog-content">
                     <div class="aplpg-blog-slider">
               <div v-if="paginatedItems.length === 0" class="noresul">
-          <span> Vous n'avez pas encore de permission, vous pouvez également en ajouter une !! </span>
+          <span> Vous n'avez pas encore de menu, vous pouvez également en ajouter un !! </span>
         </div>
     
         <div class="container-fluid " v-else>
-            <div class="row">
-        <div class="col-12">
-          <div class="card ">
-           
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th  rowspan="2" class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Noms</th>
-                      <th rowspan="2" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Crée</th>
-                      <th  colspan="4" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                      <th  rowspan="2" class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Liste des Menus</th>
-
-                    </tr>
-                    <tr>
-                    <th v-for="user in OptionPermissions" :key="user.id" class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"> {{ user.label }} </th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="user in paginatedItems" :key="user.id">
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            
-                            <img   src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                            
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ user.name }} </h6>
-                           
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold"> {{ formatCreatedAt(user.created_at) }}</span>
-                      </td>
-                        <td v-for="permission in OptionPermissions" :key="permission.id">
-            <input
-              type="checkbox"
-              value:true
-              
-              :checked="hasPermission(user, permission)"
-              :disabled="hasPermission(user, permission)"
-              @change="updatePermission(user, permission)"
-            />
-          </td>
-                      <!-- <td v-for="permission in OptionPermissions" :key="permission.value" class="align-middle text-center">
-                        <MazCheckbox v-model="checkboxStates[`${user.id}_${permission.value}`]"></MazCheckbox>
-                                       
-                      </td> -->
-               
-                      <td class="align-middle text-center">
-                        <div class="sci">
-    
-                        <span style="--i:1" class="dow">
-                        <i class="bi bi-eye" @click="updatedoc(user.id)"></i>
-                        
-                        </span>
-                        
-  
-                    </div>
-                    
-                      </td>
-                    </tr>
-                  
-              
-                  
-                
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+          <div class="" style="    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;">
+  <MazCardSpotlight v-for="competition of OptionMenus1" :key="competition.id" color="secondary">
+    <div class="flex p-4" style=" display: flex;     flex-direction: row;align-items: center; justify-content: space-evenly; width: 240px;
+    height: 100px; cursor: pointer;"  @click="$router.push({ path: '/menu/' + competition.id })">
+     <img src="@/assets/site/logo1.jpeg" alt="" style="    display: flex;
+   
+    width: 60px;
+    height: 60px;
+    border: 1px solid red;
+    border-radius: 50%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;">
+      <div class="truncate flex column">
+        <span class="truncate">
+          {{ competition.label }}
+        </span>
+       
       </div>
+    </div>
+  </MazCardSpotlight>
+</div>
         </div>
     
                     </div>
@@ -137,10 +85,9 @@
                                         <div class="row mb-3 mt-3 content-group">
                                         <div class="col">
                                         <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Rôle</label>
-                                           
-                                            <MazSelect   v-model="step1.code"  no-radius color="warning" :options="OptionRoles"  />
-                                             <small v-if="v$.step1.code.$error">{{v$.step1.code.$errors[0].$message}}</small>
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Categorie</label>
+                                            <MazSelect   v-model="step1.parent"  no-radius color="warning" :options="OptionMenus"  />
+                                             <small v-if="v$.step1.parent.$error">{{v$.step1.parent.$errors[0].$message}}</small>
                                         </div>                                       
                                         </div>
                                        
@@ -149,10 +96,29 @@
                                          <div class="row mb-3 mt-3 content-group">
                                         <div class="col">
                                         <div class="input-groupe">
-                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Autorisations</label>
-                                        
-                                            <MazSelect   v-model="step1.permissions"  no-radius color="warning" :options="OptionPermissions" multiple />
-                                             <small v-if="v$.step1.permissions.$error">{{v$.step1.permissions.$errors[0].$message}}</small>
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Nom menu</label>
+                                            <MazInput v-model="step1.label"  no-radius color="warning" type="text"/>
+                                             <small v-if="v$.step1.label.$error">{{v$.step1.label.$errors[0].$message}}</small>
+                                        </div>                                       
+                                        </div>
+                                       
+                                         </div>
+                                         <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Lien menu </label>
+                                            <MazInput v-model="step1.lien"  no-radius color="warning" type="text"/>
+                                             <small v-if="v$.step1.lien.$error">{{v$.step1.lien.$errors[0].$message}}</small>
+                                        </div>                                       
+                                        </div>
+                                       
+                                         </div>
+                                         <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Description</label>
+                                            <MazInput v-model="step1.description"  no-radius color="warning" type="text"/>
+                                             <small v-if="v$.step1.description.$error">{{v$.step1.description.$errors[0].$message}}</small>
                                         </div>                                       
                                         </div>
                                        
@@ -169,77 +135,44 @@
         
     </MazDialog>
     
-    <MazDialog v-model="UpdateCathegorie" title="liste des menus assignée a ce  role "  width="1148px">
-     
-      <div class="aplpg-blog-content">
-                    <div class="aplpg-blog-slider">
-              <div v-if="MenuRole.length === 0" class="noresul">
-          <span> Vous n'avez pas encore assignation pour ce role </span>
-        </div>
+    <MazDialog v-model="UpdateCathegorie" title="Mise à d'un role"  >
+      <div class=" d-flex align-items-center py-5">
+                            <div class="container my-auto   bg-white" id="container">
+                                <div class="row">
+                                    <div class="col-11 col-lg-11 mx-auto">
+                                       
+                                        
+                                        <small>{{ error }}</small>
+                                        <form data-request="onSignin" class="login_form">
+                                          <div class="row mb-3 mt-3 content-group">
+                                        <div class="col">
+                                        <div class="input-groupe">
+                                            <label class="font-weight-600 text-color-orange" for="emailAddress">Nom</label>
+                                            <MazInput v-model="step2.nom"  no-radius color="warning" type="text"/>
+                                             <small v-if="v$.step2.nom.$error">{{v$.step2.nom.$errors[0].$message}}</small>
+                                        </div>                                       
+                                        </div>
+                                       
+                                         </div>
+                                            
     
-        <div class="container-fluid " v-else>
-            <div class="row">
-        <div class="col-12">
-          <div class="card ">
-           
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom menu</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Lien</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Module</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Crée</th>
-                   
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="user in MenuRole" :key="user.id">
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            
-                            <img   src="@/assets/site/logo1.jpeg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                            
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ user.menu.label }} </h6>
-                           
-                          </div>
+                                            <div class="btn">
+                                                <button class="sign" @click.prevent="submitUpdate">Soumettre</button>
+                                              
+                                              </div>
+                                        </form>
+                                       
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ user.menu.lien }}</p>
-                       
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <p class="text-xs font-weight-bold mb-0">{{ name }}</p>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold"> {{ formatCreatedAt(user.menu.created_at) }}</span>
-                      </td>
-                     
-                    </tr>
-
-                
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        </div>
-    
-                    </div>
-                </div>
+        
     </MazDialog>
     
     
-      <MazDialog v-model="isdeletedoc" title="Suppression d'un personnel">
+      <MazDialog v-model="isdeletedoc" title="Suppression du module">
           <p>
-            Êtes-vous sûr de vouloir supprimer ce personnel ?
+            Êtes-vous sûr de vouloir supprimer ce module ?
           </p>
           <template #footer="{ close }">
     
@@ -252,9 +185,9 @@
     
     
     
-        <MazDialog v-model="confirmdeletedoc" title="personnel supprimé">
+        <MazDialog v-model="confirmdeletedoc" title="module supprimé">
           <p>
-            personnel supprimé avec succès !!
+            module supprimé avec succès !!
           </p>
           <template #footer="{ close }">
     
@@ -281,6 +214,8 @@
         </div>
     </template>
     <script>
+    import { getImage } from '@/lib/getImage';
+    import slide111 from "@/assets/site/logo1.jpeg"
     import Loading from '@/components/Loyout/loading.vue';
     import axios from '@/lib/axiosConfig.js'
     import MazDialog from 'maz-ui/components/MazDialog'
@@ -290,14 +225,17 @@
     import useVuelidate from '@vuelidate/core';
     import { require, lgmin, lgmax } from '@/functions/rules'
     import moment from 'moment';
-  
+    import MazCardSpotlight from 'maz-ui/components/MazCardSpotlight'
+    import MazAvatar from 'maz-ui/components/MazAvatar'
+    import { useThemeHandler } from 'maz-ui'
     export default {
       components: {
-           Loading , MazDialog , Pag , MazSwitch , MazTextarea
+           Loading , MazDialog , Pag , MazSwitch , MazTextarea , MazCardSpotlight ,MazAvatar
       }, 
     
       data() {
         return {
+          igm:slide111,
           ActualitesOptions:[],
           selectedActualites:'',
           AddCathegorie:false,
@@ -312,34 +250,42 @@
           itemsPerPage: 12,
           totalPageArray: [], 
           OptionRoles:[],
-          OptionPermissions:[],
+          OptionMenus:[],
+          OptionMenus1:[],
           checkboxStates: {},
           switchValue: {},
           v$: useVuelidate(),
-          MenuRole:[],
-          name:'',
           publish:'',
           error:'',
-            step1:{code: '' , permissions:[]} ,
-            step2:{nom: ''} ,
+            step1:{
+              parent: '' ,
+              label:'',
+              lien:'',
+              description:''
+
+            } ,
+            step2: {
+              parent: '' ,
+              label:'',
+              lien:'',
+              description:''
+
+            } ,
         }
       },
       validations: {
         step1:{  
-            code: {
-      require,
-     
-    },
-    permissions: {
-      require,
-     
-    },
-},
-    step2:{  nom: {
-      require,
-      lgmin: lgmin(2),
-      lgmax: lgmax(20),
-    }},
+          parent: {},
+          label: {},
+          lien:{},
+         description:{}
+        },
+    step2:{  
+      parent: {},
+          label: {},
+          lien:{},
+         description:{}
+  },
   
   },
       computed: {
@@ -365,6 +311,7 @@
         this.fetchRole()
       },
       methods: {
+        getImage:getImage,
     rolePermissions(role, permission) {
     return role.permissions.map(p => p.name);
   },
@@ -415,21 +362,21 @@
     },
         async fetchActualites() {
             try {
-              const response = await axios.get('/permissions', {
+              const response = await axios.get('/menus', {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
                 
               },
     
             });
-              console.log(response.data.data);
-                const nonStudentUsers = response.data.data.data
+              console.log(response.data);
+                const nonStudentUsers = response.data.data
         
         console.log(nonStudentUsers);
-       
-        this.OptionPermissions =nonStudentUsers.map(region => ({
-        label: region.name,
-        value: region.name
+        this.OptionMenus1 = nonStudentUsers
+        this.OptionMenus =nonStudentUsers.map(region => ({
+        label: region.label,
+        value: region.id
       }));
         this.loading = false;
             
@@ -575,15 +522,18 @@
              this.loading = true;
             const dataCath = {
     
-              code:this.step1.code,
-              permissions:this.step1.permissions,
+              parent:this.step1.parent || null,
+              label:this.step1.label,
+              lien:this.step1.lien,
+              description:this.step1.description,
+              icon:null
              
             }
            
             console.log(dataCath);
            
             try {
-              const response = await axios.post("/roles/assign-permissions", dataCath, {
+              const response = await axios.post("/menus", dataCath, {
                 headers: {
                   
                   Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -613,33 +563,31 @@
      async updatedoc(id){
       this.UpdateCathegorie = true
       this.loading = true
-      try {
-              const response = await axios.get(`/roles/${id}`, {
-              headers: {
-                Authorization: `Bearer ${this.loggedInUser.token}`,
-                
-              },
     
-            });
-              console.log(response.data.data);
-            
-              this.name = response.data.data.name
-              const nonStudentUsers = response.data.data.menus
-       
-        this.MenuRole = nonStudentUsers;
-        console.log(nonStudentUsers);
-
-        this.loading = false;
-            
-            } catch (error) {
-              console.error('errorqqqqq',error);
-            
-              if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-                await this.$store.dispatch('user/clearLoggedInUser');
-              this.$router.push("/");  //a revoir
-            }
-            }
-       
+        try {
+           const response = await axios.get(`/permissions/${id}`, {
+             headers: {
+              
+               Authorization: `Bearer ${this.loggedInUser.token}`,
+             },
+           });
+           console.log("Réponse du téléversement :", response);
+           if (response.data.status === "success") {
+            const selectedActualites = response.data.data;
+            this.selectedActualites = selectedActualites
+           console.log(selectedActualites);
+           this.step2.nom = selectedActualites.name;
+           
+            this.ToDeleteId = id
+             this.loading =false
+           } 
+         } catch (error) {
+          if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch('user/clearLoggedInUser');
+          this.$router.push("/");  //a revoir
+        }       console.error("Erreur lors du téléversement :", error);
+      
+         }
       },
     async  submitUpdate(){
     
@@ -952,4 +900,9 @@
     vertical-align: middle;
     text-align: center !important;
 }  
+
+.card{
+
+margin-bottom: 10px !important;
+}
     </style>

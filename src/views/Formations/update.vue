@@ -1,6 +1,7 @@
 <template >
-  <Loading v-if="loading" style="z-index: 99999;"></Loading>
  <div>
+  <Loading v-if="loading" style="z-index: 99999;"></Loading>
+
      <div class="container-fluid  d-flex justify-content-center align-items-center general" 
    data-aos-delay="100">
    <div class="form-container">
@@ -108,16 +109,10 @@
            <div class="input-groupe">
              <label for="Description">Description</label>
             
-             <Editor
-             v-model="description"
-         api-key="bj81nr38bmmn1kxmcz2zvtgri5qwksbkfynfu5yr96xh60ou"
-         :init="{
-             plugins: 'lists link image table code help wordcount',
-             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-             tinycomments_mode: 'embedded',
-             tinycomments_author: 'Author name',
-         }"
-          />
+             <div class="form-ckeditor">
+                        <ckeditor v-model="description" :editor="editor"  :config="options"></ckeditor>
+
+                      </div>
            </div>
            <small v-if="v$.description.$error">{{ v$.description.$errors[0].$message }}</small>
          </div>       
@@ -176,11 +171,13 @@ import MazInputTags from 'maz-ui/components/MazInputTags'
 import axios from '@/lib/axiosConfig.js'
 import MazDialog from 'maz-ui/components/MazDialog'
 import Loading from '@/components/Loyout/loading.vue';
-import Editor from '@tinymce/tinymce-vue'
+// import Editor from '@tinymce/tinymce-vue'
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default {
  components: {
-  MazPhoneNumberInput , MazDialog , Editor , Loading , MazInputPrice ,MazInputTags
+  MazPhoneNumberInput , MazDialog , ckeditor: CKEditor.component , Loading , MazInputPrice ,MazInputTags
 }, 
 props:['id'],
  data() {
@@ -199,6 +196,27 @@ props:['id'],
             formattedPrice:'',
             publishDoc:false,
             Categories:[],
+            editor: ClassicEditor,
+
+plugins: [
+"advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+"searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+"save table contextmenu directionality emoticons template paste textcolor",
+],
+toolbar:
+"insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | l      ink image | print preview media fullpage | forecolor backcolor emoticons",
+options: {
+height: 300,
+style_formats: [
+{ title: "Bold text", inline: "b" },
+{ title: "Red text", inline: "span", styles: { color: "#ff0000" } },
+{ title: "Red header", block: "h1", styles: { color: "#ff0000" } },
+{ title: "Example 1", inline: "span", classes: "example1" },
+{ title: "Example 2", inline: "span", classes: "example2" },
+{ title: "Table styles" },
+{ title: "Table row 1", selector: "tr", classes: "tablerow1" },
+],
+},
      }
  },
 

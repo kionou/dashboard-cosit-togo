@@ -28,6 +28,7 @@ const state = {
         nom:user.user.Nom,
         prenom:user.user.Prenoms,
         email:user.user.email,
+        profile:user.user.profile,
         whatsapp:user.user.Whatsapp,
         token: user.access_token,
          tokenExpiration: tokenExpiration,
